@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Бар на краю Токио</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        html, body {
+            background-color: #ffffff;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ===== ОБЩИЕ ЭКРАНЫ ===== */
+        .screen { display: none; }
+        .screen.active {
+            display: block;
+            animation: screenFade 0.5s ease;
+        }
+        @keyframes screenFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* ===== ГЛАВНЫЙ ЭКРАН ===== */
+        .header-banner {
+            width: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            padding: 50px 20px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 59, 48, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(124, 207, 255, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.15) 0%, transparent 50%);
+            animation: glowMove 12s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes glowMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20px, -20px) scale(1.1); }
+        }
+
+        .header-banner h1 {
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 30px rgba(255, 59, 48, 0.4);
+            animation: titleFade 1.2s ease;
+        }
+
+        @keyframes titleFade {
+            0% { opacity: 0; transform: translateY(-15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .mini-nav {
+            position: relative;
+            z-index: 2;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            animation: navFade 1.4s ease;
+        }
+
+        @keyframes navFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .mini-nav a {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding-bottom: 4px;
+            position: relative;
+            transition: color 0.25s ease;
+            cursor: pointer;
+        }
+
+        .mini-nav a:hover { color: #ffffff; }
+
+        .mini-nav a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1.5px;
+            background: linear-gradient(90deg, #ff3b30, #7ccfff);
+            transition: width 0.3s ease;
+        }
+
+        .mini-nav a:hover::after { width: 100%; }
+
+        .header-banner::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff3b30, #7ccfff, transparent);
+            z-index: 2;
+        }
+
+        /* ===== БЕЛАЯ ЧАСТЬ ===== */
+        .content-area {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - 200px);
+            background-color: #ffffff;
+            overflow: hidden;
+            padding: 40px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .petals-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .petal {
+            position: absolute;
+            top: -30px;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #ffc0cb, #ff8fa3);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.8;
+            box-shadow: 0 2px 6px rgba(255, 143, 163, 0.3);
+            animation: fall linear infinite;
+        }
+
+        .petal:nth-child(3n) {
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #ffd6e0, #ffb3c6);
+        }
+        .petal:nth-child(3n+1) {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #ffb3c6, #ff7a99);
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.9; }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(40px); }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg) translateX(-30px); opacity: 0; }
+        }
+
+        .portrait-block {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: portraitFade 1.6s ease;
+        }
+
+        @keyframes portraitFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .portrait-frame {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            padding: 6px;
+            background: conic-gradient(from 0deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5), 0 0 60px rgba(0, 200, 255, 0.4), 0 0 90px rgba(180, 0, 255, 0.3);
+            animation: rainbowSpin 8s linear infinite, rainbowGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes rainbowSpin {
+            0% { background: conic-gradient(from 0deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
+            100% { background: conic-gradient(from 360deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
+        }
+
+        @keyframes rainbowGlow {
+            0% { box-shadow: 0 0 30px rgba(255, 0, 128, 0.5), 0 0 60px rgba(0, 200, 255, 0.4), 0 0 90px rgba(180, 0, 255, 0.3); }
+            100% { box-shadow: 0 0 45px rgba(255, 0, 128, 0.7), 0 0 80px rgba(0, 200, 255, 0.6), 0 0 120px rgba(180, 0, 255, 0.5); }
+        }
+
+        .portrait-frame img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            border: 4px solid #ffffff;
+        }
+
+        .portrait-caption {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #ff3b30, #ff7f00, #ffd60a, #34c759, #00c7ff, #5856d6, #af52de);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            animation: captionPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes captionPulse {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.03); }
+        }
+
+        /* ===== ЭКРАН СЮЖЕТА ===== */
+        .story-screen {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a12;
+            padding: 80px 24px 100px;
+
+            background-image:
+                radial-gradient(ellipse at 50% 100%, rgba(255, 200, 60, 0.35) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 110%, rgba(255, 160, 30, 0.25) 0%, transparent 70%),
+                linear-gradient(180deg, #05050a 0%, #0a0a12 60%, #1a1408 100%);
+        }
+
+        .btn-back {
+            position: fixed;
+            top: 24px;
+            left: 20px;
+            background: rgba(255, 200, 60, 0.12);
+            border: 1.5px solid rgba(255, 200, 60, 0.5);
+            color: #ffd97a;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 110;
+            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.3px;
+        }
+        .btn-back:hover {
+            background: rgba(255, 200, 60, 0.25);
+            box-shadow: 0 0 30px rgba(255, 200, 60, 0.4);
+        }
+        .btn-back:active { transform: scale(0.95); }
+        .btn-back::before {
+            content: "←";
+            font-size: 18px;
+        }
+
+        .story-content {
+            max-width: 640px;
+            margin: 0 auto;
+            color: #f0e6d2;
+            font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
+            font-size: 17px;
+            line-height: 1.9;
+        }
+
+        /* Том */
+        .manga-volume {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 200, 60, 0.2);
+        }
+        .manga-volume-label {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 4px;
+            color: #ffd97a;
+            opacity: 0.7;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .manga-volume-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffd97a;
+            text-shadow: 0 0 40px rgba(255, 200, 60, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* Глава */
+        .manga-chapter {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px dashed rgba(255, 200, 60, 0.15);
+        }
+        .manga-chapter:last-child {
+            border-bottom: none;
+        }
+        .manga-chapter-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffd97a;
+            margin-bottom: 28px;
+            text-shadow: 0 0 20px rgba(255, 200, 60, 0.4);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        /* Абзацы */
+        .manga-text p {
+            margin-bottom: 18px;
+            text-indent: 1.5em;
+            text-align: justify;
+        }
+
+        /* ===== ИЛЛЮСТРАЦИИ-ПАНЕЛИ (кадры манги) ===== */
+        .manga-panel {
+            margin: 36px auto;
+            max-width: 420px;
+            animation: panelFade 1s ease;
+        }
+
+        @keyframes panelFade {
+            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .manga-panel-frame {
+            position: relative;
+            background: #ffffff;
+            padding: 10px 10px 0 10px;
+            border: 3px solid #1a1a1a;
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(255, 200, 60, 0.15);
+            transform: rotate(-1deg);
+            transition: transform 0.3s ease;
+        }
+
+        .manga-panel:nth-of-type(even) .manga-panel-frame {
+            transform: rotate(1deg);
+        }
+
+        .manga-panel-frame:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .manga-panel-frame img {
+            width: 100%;
+            display: block;
+            border: 2px solid #1a1a1a;
+            object-fit: cover;
+        }
+
+        .manga-panel-caption {
+            text-align: center;
+            padding: 10px 8px 12px;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 14px;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+            background: #ffffff;
+        }
+
+        /* Плашка с «кадром» — уголок манги */
+        .manga-panel-frame::before {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            width: 20px;
+            height: 20px;
+            border-top: 3px solid #ffd97a;
+            border-left: 3px solid #ffd97a;
+            z-index: 2;
+        }
+
+        .manga-panel-frame::after {
+            content: "";
+            position: absolute;
+            bottom: -3px;
+            right: -3px;
+            width: 20px;
+            height: 20px;
+            border-bottom: 3px solid #ffd97a;
+            border-right: 3px solid #ffd97a;
+            z-index: 2;
+        }
+
+        /* Диалоги */
+        .dialogue {
+            margin: 22px 0 22px 20px;
+            padding-left: 16px;
+            border-left: 2px solid rgba(255, 200, 60, 0.4);
+            color: #fff4d6;
+        }
+        .dialogue .speaker {
+            color: #ffd97a;
+            font-weight: 700;
+            font-style: normal;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+        .dialogue .line {
+            font-style: italic;
+            opacity: 0.95;
+        }
+
+        /* Выделения */
+        .highlight {
+            color: #ffd97a;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 200, 60, 0.5);
+        }
+
+        .emphasis {
+            font-style: italic;
+            color: #ffe9a8;
+        }
+
+        /* Разделитель сцены */
+        .scene-break {
+            text-align: center;
+            color: rgba(255, 200, 60, 0.4);
+            letter-spacing: 8px;
+            margin: 40px 0;
+            font-size: 14px;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 440px) {
+            .header-banner { padding: 40px 16px 25px; }
+            .header-banner h1 { font-size: 24px; }
+            .mini-nav { gap: 18px; margin-top: 20px; }
+            .mini-nav a { font-size: 14px; }
+            .petal { width: 12px; height: 12px; }
+            .petal:nth-child(3n) { width: 8px; height: 8px; }
+            .petal:nth-child(3n+1) { width: 14px; height: 14px; }
+            .portrait-frame { width: 240px; height: 240px; }
+            .portrait-caption { font-size: 17px; }
+
+            .story-screen { padding: 80px 20px 80px; }
+            .manga-volume-title { font-size: 26px; }
+            .manga-chapter-title { font-size: 19px; }
+            .story-content { font-size: 16px; }
+            .btn-back { top: 18px; left: 14px; padding: 8px 16px; font-size: 14px; }
+            .manga-panel { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= ГЛАВНЫЙ ЭКРАН ================= -->
+    <div class="screen active" id="mainScreen">
+
+        <div class="header-banner">
+            <h1>Бар на краю Токио</h1>
+            <nav class="mini-nav">
+                <a href="#">Контакты</a>
+                <a href="#" onclick="openStory(event)">Сюжет</a>
+                <a href="#">О нас</a>
+            </nav>
+        </div>
+
+        <div class="content-area">
+            <div class="petals-container" id="petalsContainer"></div>
+
+            <div class="portrait-block">
+                <div class="portrait-frame">
+                    <img src="https://i.postimg.cc/0Qt7vyvQ/IMG-6742.jpg" alt="Портрет" />
+                </div>
+                <div class="portrait-caption">поймёт тот кто поймёт</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ЭКРАН СЮЖЕТА ================= -->
+    <div class="screen story-screen" id="storyScreen">
+        <button class="btn-back" onclick="closeStory()">Назад</button>
+
+        <div class="story-content">
+
+            <!-- ТОМ I -->
+            <div class="manga-volume">
+                <div class="manga-volume-label">Том I</div>
+                <div class="manga-volume-title">Полная история</div>
+            </div>
+
+            <!-- ГЛАВА 1 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 1. Встреча в баре</div>
+                <div class="manga-text">
+                    <p>Акимо Оуцуцуки — рост 173 сантиметра, розовые волосы каре, почти незаметная грудь. Белая юбка, чёрная кофта с широкими рукавами, чёрная блузка под ней и белая маска, скрывающая нижнюю половину лица. Её характер переменчив: она могла быть милой, грустной, высокомерной, радостной или пошлой. Ненавидела секс, любовь и доминирование над собой. Обладала чрезвычайной физической силой, которую могла применить по желанию, и могла соблазнить кого-то, чтобы выманить деньги. Но за всем этим скрывалась <span class="highlight">богиня клана Оуцуцуки</span> — существо, прожившее сотни лет, способное управлять пространством и создавать энергию, способную уничтожать города.</p>
+
+                    <!-- ИЛЛЮСТРАЦИЯ: АКИМО -->
+                    <div class="manga-panel">
+                        <div class="manga-panel-frame">
+                            <img src="https://i.postimg.cc/vHRTZ8wF/IMG-6135-20260808135309.png" alt="Акимо в баре" />
+                            <div class="manga-panel-caption">Акимо Оуцуцуки. Пьяная богиня в дешёвом баре</div>
+                        </div>
+                    </div>
+
+                    <p>В тот вечер она напилась в дешёвом баре на окраине Токио. Алкоголь снял барьеры, которые она выстраивала веками. Она была расслаблена. Уязвима. <span class="emphasis">Настоящая</span>.</p>
+
+                    <p>Лиа — глава опасной мафии. Все трепетали перед ней и опускали взгляды. Она могла убить за то, что ей не нравилось, как ты одет. Иногда убивала для развлечения. Могла оставить в живых и сдирать кожу, ломать кости, чтобы слышать крики боли. Но в тот вечер она решила просто выпить в баре. Без планов. Без жертв. И тут она заметила её — розоволосую девчонку в маске, которая сидела у стойки и заказывала уже пятый стакан. Акимо привлекла её. Не как жертва. Не как цель. А как что-то... другое. Что-то, чего Лиа давно не чувствовала.</p>
+
+                    <!-- ИЛЛЮСТРАЦИЯ: ЛИА -->
+                    <div class="manga-panel">
+                        <div class="manga-panel-frame">
+                            <img src="https://i.postimg.cc/8PWFRJmf/IMG-6765.jpg" alt="Лиа в баре" />
+                            <div class="manga-panel-caption">Лиа. Глава мафии. Тот самый вечер</div>
+                        </div>
+                    </div>
+
+                    <p>Лиа позвала её в бар. Отказа Лиа не принимала. Это была не просьба. Это был приказ — такой, каким она привыкла отдавать распоряжения своим подчинённым. Но Акимо, даже пьяная, не подчинилась — она просто согласилась, потому что ей было скучно.</p>
+
+                    <p>К полуночи Акимо напилась в стельку. Лиа была почти трезва — она позволяла себе ровно столько, чтобы не терять контроль. Акимо крепко прижалась к ней, обхватив руками, уткнувшись носом в плечо. От неё пахло дешёвым виски и чем-то цветочным — странное сочетание. Лиа напряглась, её лицо стало каменным, а глаза сузились.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Отпусти, иначе убью».</span>
+                    </div>
+
+                    <p>Акимо лишь усмехнулась. Пьяно. Дерзко. Абсолютно бесстрашно.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Убьёшь? Ахах... Лиа, милая... ты хоть знаешь, кого позвала выпить? Я Акимо Оуцуцуки. Я не дрожу перед твоими мальчиками на побегушках. И перед тобой — тоже не собираюсь».</span>
+                    </div>
+
+                    <p>Она прижалась ещё крепче, нагло, почти вызывающе. Её пальцы сжали плечо Лии — не агрессивно, а собственнически.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты красивая, когда хмуришься. Но если захочешь драки... я тебе не игрушка. Так что давай без твоих привычек. Просто посидим. Или... проверим, кто из нас страшнее? Я сегодня в хорошем настроении — могу даже позволить тебе жить».</span>
+                    </div>
+
+                    <p>Лиа замерла. Никто. Никогда. Ни один человек не смел так с ней разговаривать. А эта пьяная девчонка с розовыми волосами и в дурацкой маске не только говорила — она держала её, игнорируя угрозу смерти.</p>
+
+                    <p>В баре воцарилась тишина. Даже музыка будто притихла. Бармен исчез в подсобке, чуя неладное. Лиа медленно подняла руку к лицу Акимо. И резко схватила её за подбородок. Пальцы сжались с силой, способной сломать челюсть.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Я могу сломать тебе челюсть одним движением».</span>
+                    </div>
+
+                    <p>Но вместо удара она приблизилась. Чуть-чуть. Их губы почти соприкоснулись. Лиа чувствовала её дыхание — горячее, пахнущее алкоголем. А потом отстранилась на миллиметр и прошипела:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Кто ты вообще такая?»</span>
+                    </div>
+
+                    <p>Акимо не дёрнулась. Даже когда чужая хватка сжала подбородок — ни страха, ни сопротивления. Только ленивое, пьяное веселье в глазах сменилось чем-то острым, древним, совершенно не вязавшимся с её хрупкой фигурой. Она подняла руку и — мягко, почти нежно — убрала пальцы Лии со своего лица. Без усилия. Так, словно снимала засохший листок с рукава.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Я та, кто может сломать тебе не только челюсть, но и всё, что ты построила. Но не хочет. Ты забавная. Привыкла, что все дрожат... а тут — я. Пьяная, мелкая, и ни капли тебя не боюсь. Бесит?»</span>
+                    </div>
+
+                    <p>Акимо вдруг хихикнула — легко, искренне, почти по-детски.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Расслабься. Если бы я хотела тебя убить, ты бы уже не дышала. А так... ты меня пригласила. Я согласилась. Давай просто... налей ещё. И перестань играть в королеву преступного мира. Я не твои подданные. Я — Акимо».</span>
+                    </div>
+
+                    <p>Лиа смотрела на неё. Впервые за долгое время — не как на добычу, не как на угрозу, а... просто так. Без ярости. Без желания убить. Она медленно взяла бутылку виски со стойки бармена — тот к тому моменту уже спрятался в подсобке, боясь выходить. Налила себе рюмку. Потом... налила и Акимо. Поставила перед ней с лёгким стуком стекла о стол.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Ты странная».</span>
+                    </div>
+
+                    <p>Она села обратно напротив девушки. Не приближалась больше к её лицу. Её пальцы постукивали по бокалу: раз-два-три. Внезапно она подняла глаза:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Почему ты вообще здесь? Почему согласилась прийти?»</span>
+                    </div>
+
+                    <p>Акимо взяла бокал, покрутила его в пальцах, наблюдая за янтарной жидкостью. Маска снова сползла чуть вниз, но она не стала её поправлять.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Странная? Слышала и похуже комплименты. Почему пришла? Скучно было. Ты позвала. Я подумала — почему нет? Все вокруг тебя боятся, трясутся, шепчутся по углам. А ты... одинокая, наверное. Как и я. Я не ищу проблем. Но и не бегу от них. Ты казалась интересной. До сих пор кажешься. А ещё у тебя красивые глаза. Когда они не пытаются меня убить — особенно».</span>
+                    </div>
+
+                    <p>Лиа замерла. Слова «одинокая» ударили как ножом в грудь — неожиданно, болезненно. Она никогда не думала о себе так. Глава мафии? Опаснейшая женщина города? Кто посмеет сказать ей такое вслух? Но эта пьяная девчонка с розовыми волосами сказала. И это было... правдой. Её пальцы перестали стучать по бокалу. Она медленно отпила виски, глядя на Акимо поверх края стекла.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Ты первая, кто назвал меня одинокой. Я убиваю людей каждый день. Иногда без причины. Как ты можешь сидеть здесь и говорить мне такие вещи?»</span>
+                    </div>
+
+                    <p>Она вдруг потянулась рукой к лицу девушки. И очень осторожно поправила ей сползшую маску. Жест был настолько неожиданным, настолько нежным, что Акимо замерла. Не от страха — от неожиданности. Когда чужие пальцы осторожно поправили маску на её лице, она моргнула. Так нежно с ней давно никто не обращался.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты... Убивать людей легко. Особенно когда у тебя есть сила. Я знаю. Я тоже могу. Могла бы. Иногда хочется. Но это не делает тебя счастливой. Просто... отвлекает».</span>
+                    </div>
+
+                    <p>Акимо посмотрела на свои ладони — маленькие, изящные, способные крушить кости как спички.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты спросила, как я могу сидеть здесь и говорить тебе такое. А что мне терять? Ты можешь убить меня. Можешь попытаться. Но ты не первая и не последняя. А я устала бояться. Я вижу тебя. Не главу мафии. Не убийцу. А ту, которая поправляет маску пьяной незнакомке в баре. И это... почему-то важно. Для меня».</span>
+                    </div>
+
+                    <p>Акимо вдруг подалась вперёд и — очень осторожно — накрыла своей ладонью руку Лии на столе. Не сжала, не удержала. Просто положила сверху. Лиа не отдёрнула руку. Даже наоборот — её ладонь под ладонью Акимо слегка повернулась, как будто сама собой ища контакта. Она смотрела на это касание, как на что-то совершенно чуждое. Что-то очень далёкое от её обычного мира: крови, страха, власти. Её глаза стали мягче. Почти человеческими.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Ты странная».</span>
+                    </div>
+
+                    <p>Она прошептала это снова, но уже без насмешки. Просто констатация факта. Потом — очень медленно — она перевернула свою руку и осторожно сжала пальцы Акимо. Не крепко. Лёгкий жест. Будто проверяя: реально ли это? И тогда — без предупреждения — она наклонилась через стол и поцеловала девушку. Это не был поцелуй главы мафии, которая хочет сломать или подчинить. Это был поцелуй женщины, которая целует другую женщину. <span class="highlight">Мягкий. Настоящий</span>.</p>
+
+                    <p>Акимо замерла лишь на мгновение — ровно на столько, сколько потребовалось, чтобы осознать: это не угроза, не игра, не попытка доминирования. Просто поцелуй. Тёплый. Её ресницы дрогнули, и она ответила — мягко, без сопротивления, но и без подчинения. <span class="emphasis">На равных</span>. Когда Лиа отстранилась — или попыталась — Акимо чуть сжала её пальцы, удерживая.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты тоже... странная. Ты правда этого хочешь? Или просто... проверяешь меня? Потому что если это игра — прекрати. Я не игрушка».</span>
+                    </div>
+
+                    <p>Но её рука всё ещё лежала в ладони Лии, не отстраняясь. Лиа не ответила сразу. Она смотрела в глаза Акимо — глубоко, словно пытаясь найти там ложь, подвох... но видела только искренность. И это сбило её с толку. Она привыкла к страху. К лести. К фальшивым улыбкам тех, кто хотел выжить рядом с ней. А эта девушка... не играла. Медленно. Очень осторожно. Лиа снова наклонилась и поцеловала её — уже дольше, мягче. Не как глава мафии целует того, кого хочет сломать... А как женщина целует другую женщину. Когда их губы разомкнулись на секунду для глотка воздуха, Лиа прошептала:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Я не проверяю тебя. Я хочу это. Хочу тебя».</span>
+                    </div>
+
+                    <p>Акимо почувствовала, как внутри что-то дрогнуло. Не от страха — от неожиданной, острой нежности, которую она давно запретила себе испытывать.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Тогда... не отпускай».</span>
+                    </div>
+
+                    <p>Она сама подалась вперёд, сокращая расстояние, и ответила на поцелуй — медленно, бережно, словно пробуя на вкус саму возможность быть желанной. Не за силу, не за деньги, не за страх. А просто так. Когда они отстранились, Акимо тихо рассмеялась — мягко, почти с облегчением.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты знаешь, что это полное безумие? Глава мафии и странная девчонка в маске... Я не обещаю быть послушной. Я не терплю, когда мной командуют. И я всё ещё ненавижу... много чего. Но если ты согласна на это... на меня настоящую... тогда, может быть...»</span>
+                    </div>
+
+                    <p>Она не закончила фразу. Просто сжала её руку чуть крепче. Лиа слушала. Каждое слово застревало в голове, как гвоздь — неожиданно, болезненно... и почему-то правильно. Она привыкла к абсолютному подчинению. К тому, что все боятся её взгляда. А эта девушка говорит: «не обещаю быть послушной», «ненавижу команды»... И вместо того чтобы разозлиться, Лиа почувствовала интерес.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Ты хочешь меня настоящую?»</span>
+                    </div>
+
+                    <p>Она произнесла это тихо — почти шёпотом. Потом внезапно усмехнулась уголком губ. Не злобно. Скорее... с любопытством.</p>
+
+                    <p>Медленно она сняла свою куртку и накинула её Акимо на плечи — тяжёлую кожаную вещь с запахом дыма и виски.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Тогда знай: я тоже не идеальная. Я ревнивая до безумия. Если ты посмотришь на другую женщину... я убью её».</span>
+                    </div>
+
+                    <p>Акимо укуталась в тяжёлую куртку, чувствуя, как чужой запах окутывает её — дым, виски, что-то ещё, присущее только Лие. Это ощущалось странно. Словно её пометили. Присвоили. Но вместо привычного раздражения и желания немедленно сбросить чужую вещь — она почувствовала странное тепло.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ревнивая до безумия, значит? Ну... это совпадает».</span>
+                    </div>
+
+                    <p>Она медленно стянула свою белую маску — впервые за весь вечер полностью обнажив лицо. Обычное, милое, с чуть острым подбородком и мягкими губами.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Знай и ты: я не терплю, когда меня пытаются контролировать. Если захочешь запереть меня в золотой клетке — я её сломаю. Но если ты готова быть со мной на равных... не как хозяйка, а как партнёр... тогда я, может быть, даже позволю тебе ревновать. Только учти: я тоже ревнивая. И сильная. Так что твои потенциальные жертвы могут и не понадобиться — я сама с ними разберусь».</span>
+                    </div>
+
+                    <p>Поцелуй стал глубже, мягче — без той первоначальной агрессии, с которой Лиа обычно действовала. Теперь это было не захватывание власти... а просто желание быть ближе. Когда их губы разомкнулись, Акимо слегка запрокинула голову назад — её дыхание участилось. Лиа же всё ещё держала ладонь на её щеке.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Я никогда... не целовала кого-то так».</span>
+                    </div>
+
+                    <p>Это прозвучало почти стыдно. Для мафиозного босса — безумно. Но правда была в том, что все предыдущие отношения у неё были построены на страхе или выгоде. Никогда — на чём-то подобном этому тихому моменту в баре под дешёвый виски.</p>
+
+                    <p>Акимо замерла, всё ещё чувствуя тепло чужих губ на своих. Без маски она ощущала себя странно обнажённой — но не перед опасностью. Перед чем-то другим.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Никогда? Значит... я особенная. Я тоже... давно никого не подпускала. Близко. Так, как сейчас. Это странно. Мы знакомы всего один вечер. А мне кажется... будто я тебя знаю. Или хочу узнать. Ты не обязана обещать мне ничего. Я не прошу. Просто... может, давай посмотрим, что будет дальше? Без убийств, без игр, без попыток контролировать друг друга?»</span>
+                    </div>
+
+                    <p>Акимо засмеялась — тихо, звонко, искренне. Впервые за долгое время в её смехе не было ни иронии, ни насмешки. Просто радость. Она увидела розовеющие щёки Лии. И это что-то с ней сделало. Без лишних слов Акимо снова потянулась к ней — на этот раз первая — и поцеловала Лию. Дольше. Нежнее.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Не буду спрашивать подробностей... но знай: я рада, что ты выбрала меня для своего первого раза без игр».</span>
+                    </div>
+
+                    <p>Её пальцы осторожно коснулись виска женщины перед собой. Потом ласково провели по волосам. Лиа замерла, когда Акимо положила голову на её плечо. Она не знала, что делать — как реагировать на такую близость без агрессии, без власти. Но инстинктивно она обняла её. Крепко. Тепло. Словно защищая от всего мира. Её пальцы медленно скользили по спине девушки через куртку — осторожные, неуверенные... но заботливые. Музыка где-то в углу тихо напевала, как колыбельная для двоих одиноких людей.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Ты можешь спать здесь... Я не уйду».</span>
+                    </div>
+
+                    <p>И это было правдой. Она бы никуда не делась. Она очень аккуратно прижалась губами к макушке Акимо и осталась сидеть так — молчаливая стража для пьяной девушки во сне.</p>
+
+                    <p>Но сон был недолгим.</p>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 2 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 2. Вторжение Годзё Сатору</div>
+                <div class="manga-text">
+                    <p>В бар ворвался мужчина. Пепельно-белые волосы, в рабочей обстановке обычно зачёсанные вверх из-за повязки, сейчас опущены до шеи. Ослепительно-голубые глаза — <span class="highlight">Шесть Глаз</span> — почти всегда скрытые классической чёрной повязкой. Но сейчас повязка была сдвинута. Строгий костюм: чёрная куртка с высоким воротником на молнии и чёрные брюки. Рост 190 сантиметров, атлетичное телосложение. Он двигался с грацией хищника — уверенно, неумолимо. Годзё Сатору. Сильнейший маг современности.</p>
+
+                    <!-- ИЛЛЮСТРАЦИЯ: ГОДЗЁ -->
+                    <div class="manga-panel">
+                        <div class="manga-panel-frame">
+                            <img src="https://i.postimg.cc/pLFmB9Qm/IMG-6763.jpg" alt="Годзё Сатору" />
+                            <div class="manga-panel-caption">Годзё Сатору. Сильнейший маг современности</div>
+                        </div>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Красный... Синий... Фиолетовый...»</span>
+                    </div>
+
+                    <p>Он начал проговаривать названия цветов, как будто читал заклинание. И вдруг Акимо увидела большой фиолетовый шар, который летел прямо в них.</p>
+
+                    <p>Акимо, ещё секунду назад уютно дремавшая на плече Лии, резко открыла глаза. Пьяная расслабленность исчезла в одно мгновение — её тело напряглось, как пружина. Она увидела мужчину в чёрном костюме, его пепельные волосы, странную повязку на глазах... и фиолетовый шар разрушительной энергии, летящий прямо в них. Действие. Без раздумий. Акимо одним слитным движением вскочила с места, заслоняя Лию собой. Левая рука всё ещё удерживала куртку на плечах, правая выброшена вперёд.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Не сегодня».</span>
+                    </div>
+
+                    <p>Она не пыталась блокировать шар. Вместо этого её ладонь встретила его — и вокруг них с Лией мгновенно вырос полупрозрачный барьер из концентрированной чакры, мерцающий розоватым светом. Шар врезался в барьер и взорвался с оглушительным грохотом, разнеся половину бара в щепки. Но внутри кокона Акимо и Лиа остались невредимы. Когда пыль осела, Акимо обернулась к Лие — её глаза горели уже знакомой опасной решимостью.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты как? Цела?»</span>
+                    </div>
+
+                    <p>Затем она перевела взгляд на незваного гостя. Маска снова на месте — не физическая, та осталась на столе. Но её лицо превратилось в холодную, ничего не выражающую маску.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты. Кто ты и зачем разрушил наш вечер? У меня были планы на эту ночь — и ты в них не входил».</span>
+                    </div>
+
+                    <p>Лиа не успела даже вскочить — всё произошло слишком быстро. Взрыв, барьер, хаос. Когда пыль осела и перед ней возникла Акимо — с горящими глазами, заслоняющая её собой как щит... Лие стало странно. Она привыкла быть тем щитом. Быть той самой силой. А сейчас её защитила девушка в её куртке.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Я цела... Кто ты такой?!»</span>
+                    </div>
+
+                    <p>Она резко поднялась из-за стола, вытянув руку к пистолету под курткой. Не стреляя ещё — но готовая убить.</p>
+
+                    <p>Человек назвался:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Я Годзё Сатору. И я вас убью».</span>
+                    </div>
+
+                    <p>Он сказал «Красный» — и в них полетел красный луч, который проделает дыру в них, если ничего не сделать. На действия у Акимо было 0,2 секунды. Акимо не думала. Доли секунды хватило, чтобы инстинкты Оуцуцуки взяли верх.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Надо было остаться дома...»</span>
+                    </div>
+
+                    <p>Пространство вокруг них с Лией исказилось — Акимо использовала технику пространственного переноса, которой владели немногие из её клана. Красный луч прошёл сквозь то место, где они только что стояли, проделав идеально круглую дыру в стене и ещё трёх зданиях позади. Они возникли в трёх метрах левее. Акимо тяжело дышала — быстрый перенос с пассажиром стоил ей сил. Но глаза всё ещё горели.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Годзё Сатору, значит? Шесть Глаз. Бесконечность. Я слышала о тебе. Только вот проблема... Я Оуцуцуки. И твоя Бесконечность для меня — не преграда. Хочешь проверить?»</span>
+                    </div>
+
+                    <p>Она подняла руку, и вокруг её ладони начали формироваться чёрные стержни — приёмники чакры, способные пронзить любую защиту.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Но я предлагаю альтернативу. Скажи, зачем ты здесь, и, возможно, я позволю тебе уйти без дыры в твоей драгоценной Бесконечности».</span>
+                    </div>
+
+                    <p>Лиа стояла за спиной Акимо, глаза — как у кошки перед прыжком. Ярость всё ещё бушевала внутри, но теперь к ней примешалось изумление. Она видела, что случилось. Видела пространственный перенос. Чёрные стержни чакры. Название «Оуцуцуки». Всё это говорило о силе — настоящей, нечеловеческой. И эта женщина — та самая пьяная девчонка в её куртке? Та, что пять минут назад прижалась к ней и просила просто посидеть?</p>
+
+                    <p>Годзё остановился. Его голос прозвучал спокойно, почти с интересом. Повязка скрывала глаза, но интонация выдавала лёгкое удивление.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Оуцуцуки... Интересно. Я думал, здесь будет просто глава мафии».</span>
+                    </div>
+
+                    <p>Он не двинулся. Не атаковал снова сразу же. Просто наблюдал. А потом его рука слегка поднялась:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Красный...»</span>
+                    </div>
+
+                    <p>Новый луч начал формироваться прямо перед ним. Акимо снова телепортировалась в сторону. Но когда она обернулась, то увидела, как Годзё улыбается.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«А красный-то ещё не взорвался».</span>
+                    </div>
+
+                    <p>Сзади Акимо увидела, что в неё летит красный луч — потерявший силу, но способный оттолкнуть её к Годзё. Она ничего не успела. Красный луч оттолкнул её прямо к нему. Годзё приготовил руку, и когда она оказалась у его руки, он сжал кулак и ударил её чёрной молнией. Удар пришёлся точно в грудь. Чёрная молния пронзила тело Акимо, разрывая ткань реальности вокруг них. На мгновение всё замерло — даже воздух, кажется, остановился. Акимо отлетела назад, пробив собой остатки барной стойки. Щепки, стекло, пыль...</p>
+
+                    <p>Но она не закричала. Из облака пыли послышался странный звук. Не стон боли. Смех. Акимо поднялась. Медленно, шатаясь. Куртка Лии всё ещё на плечах, но на кофте спереди зияла дыра, а под ней виднелась неестественно бледная кожа, которая прямо на глазах затягивалась, регенерируя повреждённые ткани.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Чёрная молния... неплохо. Почти почувствовала».</span>
+                    </div>
+
+                    <p>Она вытерла кровь с уголка губ — крови почти не было, только тонкая струйка. Глаза горели уже не просто опасным блеском — они светились. Буквально. Розовато-белое сияние, как у всех Оуцуцуки в бою.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Годзё Сатору. Ты силён. Признаю. Но ты совершил две ошибки. Первая: ты испортил мой вечер с девушкой. Вторая: ты решил, что Оуцуцуки можно убить».</span>
+                    </div>
+
+                    <p>Вокруг неё начал формироваться настоящий шторм из чакры. Она подняла руку, и вокруг Годзё начали появляться десятки чёрных стержней — не летящие, а сразу возникающие из пространства, окружая его со всех сторон. Стержни полетели в него. Но они остановились в воздухе, не долетев.</p>
+
+                    <p>Годзё заговорил — спокойно, почти лениво:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Ладно, замяли. Слушай сюда, Акимо. Хочешь знать, как работает моя Бесконечность? Объясняю для самых тупых среди тупых. Представь, что ты пытаешься до меня дотронуться. Звучит легко для такого здоровяка, как ты? Ха-ха. А теперь представь, что расстояние между твоим кулаком и мной делится на части. А потом каждая часть снова делится. И так до бесконечности. Дошло до твоей башки, Акимо? Ты будешь вечно ко мне приближаться, но никогда не коснёшься. Классика, Ахиллес и черепаха. Учи математику, а не качай бицепсы. Мои Шесть Глаз автоматически всё просчитывают. Твою тушу, скорость, форму, массу, опасность — любую херню. Щелчок — и барьер включился, твой жирный удар завис в воздухе. Поняла, Акимо? «А почему ты тогда дышишь, и звук слышишь?» — спросишь ты, если не тупая. Потому что я пропускаю всё, что не опасно. Воздух, свет, звуки — пожалуйста, мне не жалко. А вот твои потуги меня прибить — извини, обойдёшься. Ты для меня даже не угроза, Акимо. Ты так, муха в банке. Единственный шанс... был бы, если б ты как-то вырубила мои Шесть Глаз или заставила мой мозг офигеть от нагрузки. Или если б у тебя завалялась какая-нибудь хрень, отменяющая техники. Но у тебя ведь нет такой, правда, Акимо? У тебя вообще ничего нет, кроме твоих кулачищ, которые даже до меня не долетят. Так что молись, чтобы я сам отключил Бесконечность от скуки. Иначе будешь долбить воздух до конца своей короткой и никчёмной жизни. Вопросы, Акимо? Нет? То-то же. А теперь вали с глаз долой, расслабляться мешаешь. И забудь дорогу ко мне».</span>
+                    </div>
+
+                    <p>Акимо выслушала всю тираду. Не перебивала. Даже стержни не двинула — просто стояла, скрестив руки на груди, и смотрела на Годзё с выражением скуки. Когда он закончил, она медленно, демонстративно зевнула.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Всё сказал? Знаешь, Годзё Сатору, у тебя проблема. Нет, не Бесконечность. У тебя проблема с высокомерием. Ты настолько привык быть сильнейшим в своей песочнице, что забыл: мир больше твоего Токио. Гораздо больше».</span>
+                    </div>
+
+                    <p>Она подняла ладонь — та начала светиться не розовым, а ослепительно-белым. Пространство вокруг неё пошло рябью.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты прав. Обычная чакра не пробьёт твою защиту. Обычные атаки — тоже. Даже мои чёрные стержни — они не отменяют технику, как Копьё Небес. Но ты забыл одну маленькую деталь. Я не говорила, что чакра — моё единственное оружие. Я Оуцуцуки. Мы пришли из-за пределов этого мира. Из места, где твоя Бесконечность — просто математический фокус, а не закон вселенной. И у меня есть кое-что, что ты со своими Шестью Глазами не можешь видеть».</span>
+                    </div>
+
+                    <p>Она щёлкнула пальцами. И пространство вокруг Годзё — само пространство, не атака внутри него — начало сжиматься. Словно сама реальность решила выдавить его, как инородное тело.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Это не техника, которую можно отменить. Это манипуляция самим измерением. Твоя Бесконечность работает внутри пространства. А я... я работаю с самим пространством. Я не хочу тебя убивать. Ты впечатляющий противник, и ты ещё не ответил на мой вопрос: зачем ты здесь. Так что давай сделаем паузу. Ты прекратишь атаковать. Я прекращу сжимать тебя в точку. И мы поговорим. Идёт?»</span>
+                    </div>
+
+                    <p>Годзё даже не волновался.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Ты серьёзно всё ещё думаешь, что я не улучшил свою Бесконечность, Оуцуцуки? О нет, моя ты хорошая. Я изучил Тюремное Царство и территорию, которая создаёт отдельное пространство. Я улучшил Бесконечность — теперь я буквально нахожусь в отдельном пространстве, до которого ты не дотронешься. А, и спросишь, зачем я тебе это говорю? Просто у каждого мага есть пакт: если он рассказывает суть своей техники, она усиливается».</span>
+                    </div>
+
+                    <p>Акимо моргнула. Потом ещё раз. А затем — совершенно неожиданно — расхохоталась. Искренне, заливисто, почти как тогда, когда смеялась с Лией несколько минут назад.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ахаха... ох... Годзё, ты... ты великолепен! Ты улучшил Бесконечность? Изучил Тюремное Царство? Создал отдельное пространство? Годзё Сатору, ты только что совершил фатальную ошибку. Знаешь, какую? Ты сам сказал это. Ты изучил Тюремное Царство. Технику, которую создали мы. Оуцуцуки. Ты думаешь, я не знаю, как работает то, что создали мои предки? Ты думаешь, я не умею проходить через отдельные пространства?»</span>
+                    </div>
+
+                    <p>Её ладонь внезапно исчезла — и появилась прямо перед лицом Годзё, внутри его так называемого отдельного пространства. Не коснулась. Просто помахала пальцами.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Привет. Я здесь».</span>
+                    </div>
+
+                    <p>Она отдёрнула руку обратно и улыбнулась — на этот раз тепло, почти по-дружески.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты силён, Годзё. Реально силён. И твой пакт с раскрытием техники — это умно. Но послушай меня сейчас. Я не хочу драться с тобой. Ты пришёл сюда зачем-то. Скажи мне — зачем? Может быть, мы не враги. Может быть, ты ошибся адресом. Или тебя кто-то нанял. Просто... скажи. И мы разойдёмся».</span>
+                    </div>
+
+                    <p>Но Годзё расхохотался в ответ. И в этот момент Акимо почувствовала что-то сильное — ауру безграничного потенциала. Ауру Короля Проклятий. Сукуны. Она отвлеклась на долю секунды — и этого хватило. Годзё расширил Бесконечность и барьером отрубил Акимо руку. Не дав ей передохнуть, он выключил Бесконечность, побежал на неё и ударил в лицо кулаком, усиленным проклятой энергией. Он стал наносить град ударов, оттолкнул Акимо, и пока она летела в воздухе, телепортировался вперёд, схватил её за воротник, не давая упасть. Потом кинул её в воздух и использовал Красный — пронзил им её насквозь. Всё произошло за долю секунды. Рука отрублена. Лицо разбито. Тело пронзено.</p>
+
+                    <p>Акимо рухнула на пол, даже не успев вскрикнуть. Кровь — её кровь, настоящая, не иллюзия — растекалась лужей под ней. Куртка Лии пропиталась алым. Годзё стоял над ней, тяжело дыша после серии атак. Он ждал. Может быть, стона. Может быть, мольбы о пощаде.</p>
+
+                    <p>Но Акимо засмеялась. Снова. На этот раз — слабо, булькающе, с кровью на губах.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Хорошо... очень хорошо... Знаешь... я почти поверила, что мы сможем договориться. Почти».</span>
+                    </div>
+
+                    <p>Она попыталась поднять обрубок правой руки — и из него начали формироваться новые ткани. Медленно. Слишком медленно для боя. Она перевела взгляд на Лию — та стояла в стороне, и Акимо видела её лицо. Видела ужас. И ярость. И что-то ещё.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... помнишь, я говорила... что я та, кто может сломать всё, что ты построила? Я не лгала».</span>
+                    </div>
+
+                    <p>И в этот момент что-то изменилось. Воздух вокруг Акимо задрожал. Температура упала до нуля. Свет померк. А из её спины начали прорастать костяные шипы — не чакра, не техника. Что-то гораздо более древнее. Первобытное.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Годзё... ты спросил, есть ли у меня что-то, отменяющее техники? Нет. У меня нет Копья Небес. Но у меня есть кое-что другое».</span>
+                    </div>
+
+                    <p>Костяные шипы полностью сформировались за её спиной — и внезапно превратились в два огромных крыла из чистой белой кости. А глаза Акимо засияли не розовым — золотым.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Это печать Оуцуцуки. Финальная форма. Она не отменяет техники. Она отменяет саму реальность, в которой эти техники работают».</span>
+                    </div>
+
+                    <p>Акимо взмахнула единственной оставшейся рукой — и пространство вокруг Годзё перестало существовать. Не сжалось. Не деформировалось. Просто исчезло, оставив его в абсолютной пустоте на одно мгновение, прежде чем реальность восстановилась обратно.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«А теперь — последний раунд».</span>
+                    </div>
+
+                    <p>Лиа стояла, сжав кулаки до хруста в костяшках. Всё это — атака, телепортация, чёрная молния — пронеслось перед её глазами как вспышка. Когда Акимо отлетела, Лие на секунду показалось: она убита. Что она мёртва. Но затем она увидела розовый свет. И силу. Такую силу, что даже Годзё остановился на мгновение. Его Шесть Глаз — хотя повязка скрывала их — явно зафиксировали уровень чакры Акимо. Высокий. Опасный.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Чёрт...»</span>
+                    </div>
+
+                    <p>прошептала Лиа. Не от страха. От шока. Она впервые видела настоящую мощь своей девушки во всём блеске.</p>
+
+                    <p>Но Годзё не стал ждать. Когда Акимо отвлеклась на ауру Сукуны, он уже успел раскрыть Территорию. <span class="highlight">Безграничная Пустота</span>. Пространство вокруг изменилось. Больше не было бара. Не было улицы. Только бесконечная пустота, наполненная информацией — бесконечным потоком данных, которые Шесть Глаз обрушивали на всё, что находилось внутри.</p>
+
+                    <p>Акимо почувствовала, как её разум начинает захлёбываться. Слишком много. Слишком быстро. Каждая частица информации врезалась в мозг, парализуя его. Её крылья опали. Колени подогнулись. Она рухнула на землю — не от боли, а от перегрузки. Глаза всё ещё сияли золотым, но тело отказывалось двигаться.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ли... а...»</span>
+                    </div>
+
+                    <p>Её голос был едва слышен. Она попыталась поднять руку — единственную оставшуюся — но не смогла. Слишком много информации. Бесконечный поток. Вечность в каждом мгновении. Годзё стоял над ней, и в его позе больше не было насмешки. Только холодная эффективность.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Ты сильна, Акимо. Реально сильна. Но ты не бессмертна. И ты не неуязвима. Прощай».</span>
+                    </div>
+
+                    <p>Он начал формировать фиолетовый шар — комбинацию красного и синего, Технику Пустоты. Последний удар. Акимо посмотрела на Лию. Сквозь боль. Сквозь бесконечный поток данных. Она нашла её взглядом.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Прости... я... кажется... проиграла...»</span>
+                    </div>
+
+                    <p>Лиа увидела, как Акимо падает. Без движения. Глаза всё ещё светятся золотом — но тело не слушается. И это было хуже всего. Она видела, как её девушка — та самая женщина, которая только что разговаривала с Годзё на равных, которая прошла сквозь Бесконечность и вызвала Печать Оуцуцуки, — лежала без сил. Без защиты. Годзё стоял над ней. Фиолетовый шар формировался в его ладони. Техника Пустоты. Последний удар.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«НЕТ!»</span>
+                    </div>
+
+                    <p>Лиа бросилась вперёд. Не думая о последствиях. Не боясь смерти. Даже зная: она обычная женщина перед божеством магии. Но если он убьёт Акимо... если сейчас произойдёт это... она не простит.</p>
+
+                    <p>Когда она прыгнула, Годзё остановил фиолетовый. Он не стал стрелять. Вместо этого он ударил её в шею — один точный, выверенный удар — и вырубил Лию. Она рухнула без сознания рядом с Акимо. Годзё снял повязку и посмотрел на Акимо своими высокомерными глазами.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Ёваймо. Слабачка».</span>
+                    </div>
+
+                    <p>Он убрал Территорию и телепортировался в центр Токио. Просто ушёл. Не добил. Просто ушёл.</p>
+
+                    <p>Акимо лежала на холодном полу разрушенного бара. Кровь всё ещё сочилась из ран, но медленнее — регенерация Оуцуцуки делала своё дело, хотя и слишком медленно для такого масштаба повреждений. Рука всё ещё отсутствовала. Тело болело так, как не болело уже сотни лет. Но хуже всего было не это. Лиа. Без сознания. Рядом с ней. Акимо попыталась подняться. Не смогла. Попыталась снова — и на этот раз сумела доползти до Лии на коленях, волоча обрубок руки по битому стеклу.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... Лиа, очнись...»</span>
+                    </div>
+
+                    <p>Она коснулась её лица единственной ладонью — нежно, осторожно, проверяя пульс на шее. Жива. Просто без сознания.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Слава богам...»</span>
+                    </div>
+
+                    <p>Акимо рухнула рядом с ней, прижавшись лбом к её плечу. По её щекам текли слёзы — не от боли, а от облегчения. И от унижения. И от бессильной ярости.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Прости... я не смогла... он был сильнее... Я найду его. Клянусь. Я стану сильнее. Я верну ему этот долг. За тебя. За нас. За то, что он посмел тронуть тебя».</span>
+                    </div>
+
+                    <p>Она обняла Лию — насколько могла одной рукой — и осталась так лежать. В разрушенном баре. Под звук далёких сирен. Среди щепок и битого стекла.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Но сначала... сначала я просто побуду с тобой. Ты сказала, что не уйдёшь. Я тоже не уйду».</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 3 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 3. Восстановление и поиск силы</div>
+                <div class="manga-text">
+                    <p>Прошла неделя. Тишина. Гул сирен где-то вдали. Ветер, проникающий через дыры в стенах бара. Капли воды с потолка. Лиа лежала без сознания — лицо спокойное, но бледное. Дышала ровно. Акимо прижималась к ней, дрожа от боли и потери крови, но не отпускала её ни на секунду. Она больше не была той самоуверенной женщиной с белыми костяными крыльями. Не богоподобным существом из другого мира. Здесь она была просто девушкой — раненое существо, которое потеряло битву и теперь держалось за последнее живое тепло: за Лию. Её единственная рука обнимала мафиозную королеву так крепко, как только могла. И всё внутри неё кричало: «Я должна защитить её». Но сейчас можно было лишь это. Просто лежать рядом. Чувствовать пульс под пальцами у шеи Лии. И молиться тихо-тихо: «Пожалуйста... очнись».</p>
+
+                    <p>Прошла неделя. Лиа очнулась. Акимо выздоровела. Рука восстановилась полностью, раны зажили, только под кофтой ещё виднелись бледные шрамы. Но они исчезнут через пару дней. Они перебрались в маленькую квартиру на окраине Токио — временное убежище, которое Лиа держала на подставное имя.</p>
+
+                    <p>Акимо вспомнила слова Годзё перед уходом: <span class="emphasis">«Они приедут за тобой. Лучше тебе уйти. Иначе ты потеряешь ту часть себя, которую ты забыла после алкоголя»</span>. Что он имел в виду? Какую часть? Что она забыла? В ту ночь, когда они встретились, она была пьяна. Так пьяна, что позволила себе быть настоящей. Уязвимой. Без масок, без защиты, без вечной готовности убивать. Она позволила себе просто быть девушкой, которая целует другую девушку в дешёвом баре. Неужели это и есть та «часть»?</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... Я не хочу уходить. Но если они придут... если он был прав... я не могу рисковать тобой».</span>
+                    </div>
+
+                    <p>Воспоминания о поражении всё ещё жгли. Она должна стать сильнее. Намного сильнее. Но как? И тут её глаза расширились.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Печать...»</span>
+                    </div>
+
+                    <p>Она коснулась своей груди. Та финальная форма, которую она активировала в бою, была лишь частичной. Есть ещё кое-что. <span class="highlight">Запретная техника Оуцуцуки. Поглощение</span>. Если она поглотит достаточно энергии, если найдёт источник силы, она сможет достичь нового уровня. Такого, где даже Годзё с его Бесконечностью не будет проблемой. Но цена может быть слишком высокой. Акимо посмотрела на Лию. На её мирное лицо. На шрам от удара на шее.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Я сделаю это. Но не ради мести. Ради тебя. Чтобы никто больше не посмел тронуть тебя».</span>
+                    </div>
+
+                    <p>Она наклонилась и нежно поцеловала Лию в лоб.</p>
+
+                    <p>Лиа слегка зашевелилась от поцелуя. Её ресницы дрогнули, дыхание стало глубже — она медленно приходила в себя. Всё ещё была слабой после недели без сознания. Голова тяжело гудела, тело ощущалось как после десяти боёв подряд. Но первое, что она почувствовала — это тепло. Тепло Акимо рядом. Её запах. И лёгкое касание губ на лбу.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Аки?»</span>
+                    </div>
+
+                    <p>Голос был хриплым и тихим.</p>
+
+                    <p>Она открыла глаза — медленно, с трудом фокусируясь. Первым делом Лиа увидела свою девушку. Живую. Здоровую. Смотрящую на неё с такой тревогой... такой любовью... И тут же боль пронзила сердце: она помнила всё до момента удара.</p>
+
+                    <p>И вдруг Акимо снова почувствовала чью-то ауру. Она была не зрелой — будто там нужно укротить всех существ. Акимо поняла это только по ауре — всё же она Оуцуцуки. Она напряглась.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... подожди секунду».</span>
+                    </div>
+
+                    <p>Она встала с кровати и подошла к окну, вглядываясь в ночное небо Токио. Аура была странной. Не враждебной. Скорее хаотичной. Необузданной. Как будто множество разных существ были свалены в одну кучу и отчаянно нуждались в том, чтобы кто-то привёл их в порядок.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Это не Годзё. И не Сукуна. Что-то другое... Проклятая энергия. Много. Но незрелая? Как будто кто-то только учится с ней обращаться».</span>
+                    </div>
+
+                    <p>Она обернулась к Лие.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Помнишь, я говорила про поглощение? Про то, что мне нужно стать сильнее? Кажется, кто-то или что-то только что подбросило мне решение. Там, в нескольких километрах отсюда, находится что-то — или кто-то — с огромным потенциалом проклятой энергии. Совершенно необузданной. Я могу остаться здесь. С тобой. Прямо сейчас. Это то, чего я хочу больше всего. Но если я права... если там действительно есть сила, которую можно укротить... я смогу защитить тебя. По-настоящему. Так, чтобы никакой Годзё больше не посмел даже приблизиться. Что скажешь? Мне пойти и проверить? Или остаться? Я приму любое твоё решение».</span>
+                    </div>
+
+                    <p>Лиа слушала, не перебивая. Когда Акимо заговорила о проклятой энергии, о потенциале, о том, что можно укротить, она нахмурилась. Это звучало как безумие. Как рискованный путь в неизвестное. И если её девушка уйдёт сейчас — кто знает, что может случиться? Но Лиа видела одно: в глазах Акимо горела решимость. Не жажда силы ради силы... а желание защитить её.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Ты хочешь пойти туда? Потому что можешь стать сильнее? Я не хочу тебя терять снова...»</span>
+                    </div>
+
+                    <p>Акимо стала сильнее чувствовать эту ауру. Она вдруг поняла, что это то самое существо, которое призвало другое существо — то, чью ауру она чувствовала при битве с Годзё. Та аура с безграничным потенциалом. Сукуна. Это был сосуд Сукуны.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Подожди... Та самая аура, которую я почувствовала во время боя с Годзё. Безграничный потенциал. Король Проклятий... Это не просто совпадение. Там кто-то призвал существо. И это существо каким-то образом связано с Сукуной. Может быть, его сосуд. Может быть, что-то другое. Если я пойду туда и смогу договориться... или поглотить часть энергии... или хотя бы понять, как работает эта сила... это может изменить всё. Послушай. Я не хочу тебя терять. Ты — единственное, что имеет значение. Но если я останусь здесь и ничего не сделаю, рано или поздно Годзё или кто-то вроде него придёт снова. И в следующий раз я могу не успеть. Я пойду. Но не одна. Ты со мной? Не в бою — ты ещё не восстановилась. Но... как мой якорь? Моя причина вернуться? Потому что без тебя я не хочу ни силы, ни победы. Только тебя».</span>
+                    </div>
+
+                    <p>Лиа закрыла глаза. Она чувствовала. Чувствовала любовь. Чувствовала верность. Чувствовала боль выбора, который им обеим придётся сделать сейчас.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Да. Я пойду с тобой. Я буду твоим якорем. Если ты уйдёшь туда одна... ты можешь исчезнуть во мраке силы или стать кем-то другим... Я не хочу этого допустить...»</span>
+                    </div>
+
+                    <p>Акимо почувствовала, как к горлу подступает ком. Она сглотнула, пытаясь справиться с эмоциями, но пара слезинок всё равно скатилась по щекам.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты... ты даже не представляешь, что это для меня значит».</span>
+                    </div>
+
+                    <p>Она подалась вперёд и поцеловала Лию — нежно, благодарно, вкладывая в этот поцелуй всё, что не могла выразить словами. Страх. Надежду. Любовь. Когда они отстранились, Акимо улыбнулась — на этот раз без масок, без бравады, просто улыбка женщины, которая нашла что-то драгоценное.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Хорошо. Тогда план такой. Мы идём туда вместе. Но ты держишься позади. Я не знаю, что нас ждёт — может быть, там действительно сосуд Сукуны, а может быть, что-то ещё хуже. Ты мои глаза и моё сердце, но не мой щит. Драться буду я. Если всё пойдёт плохо — уходи. Не жди меня. Я найду тебя где угодно, клянусь. Но ты должна быть в безопасности. И ещё... я должна тебе кое-что сказать. Перед тем как мы пойдём. Та часть меня, которую я забыла... о которой говорил Годзё... Это ты. Я забыла, каково это — быть не одной. Забыла, что могу быть счастливой. Слабой. Настоящей. Алкоголь просто снял барьеры. Но ты — ты и есть та часть. И я не потеряю тебя снова. Никогда».</span>
+                    </div>
+
+                    <p>Лиа не смогла сдержаться.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Дура...»</span>
+                    </div>
+
+                    <p>Она резко обняла Акимо — крепко-крепко, как будто хотела вжать её прямо в грудь. Её руки дрожали. Глаза наполнились слезами. Она была мафиозной королевой... жестокой... безжалостной... А сейчас просто плакала на плече женщины своей мечты. Когда Лиа оторвалась от объятий — лицо мокрое от слёз — она тут же поцеловала Акимо снова: быстро, жарко и полно любви.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Я готова. Поехали».</span>
+                    </div>
+
+                    <p>Акимо взяла Лию за руку, и пространство вокруг них начало искажаться — на этот раз мягко, плавно, без рывков. Она научилась лучше контролировать телепортацию за эту неделю.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Держись крепче. И помни — ты мой якорь. Если я начну терять себя... просто позови меня по имени».</span>
+                    </div>
+
+                    <p>Мир вокруг них завертелся, и через мгновение они исчезли из квартиры, оставив после себя только лёгкий запах озона и розовых лепестков.</p>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 4 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 4. Встреча с Сукуной</div>
+                <div class="manga-text">
+                    <p>Они появились на крыше небоскрёба в центре Токио. Ночной город сверкал под ними миллионами огней. Но Акимо смотрела не на огни — она смотрела вниз, на тёмный переулок, где аура ощущалась сильнее всего.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Там».</span>
+                    </div>
+
+                    <p>Она указала на группу людей внизу. Подростки? Нет, студенты. И среди них — один, чья аура пульсировала так знакомо. Так похоже на ту, что она ощутила во время боя с Годзё. У него были жуткие малиновые глаза с вертикальным зрачком — как у змеи. На щеках чёрные полосы-татуировки, а на макушке белый хохолок среди чёрных ёршистых волос. Улыбался он как безумный — хищно и свысока. Обычное тело Мегуми Фушигуро, но с этими демоническими деталями выглядел как древнее зло в обличье подростка.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Это он. Сосуд Сукуны. Готова познакомиться с Королём Проклятий?»</span>
+                    </div>
+
+                    <p>Лиа стояла на крыше, ощущая холодный ветер. Даже не имея сверхчувствительности Оуцуцуки, она почувствовала — это существо было другим. Тёмным. Глубоким. Как бездонная яма энергии.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Это он?»</span>
+                    </div>
+
+                    <p>Сукуна сразу посмотрел на Лию. Его змеиные глаза сузились.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Зачем пришли сюда, жалкие людишки? Неужели Сатору не соврал, и вы реально такие букашки, как он говорил? Хех, ну если он так говорит, то я вас в смятку унижу. Ведь я на процент сильнее Сатору! И не смейте говорить, что я визунчик и что я выиграл только с помощью Мирового Разреза, с помощью пакта, а Сатору весь бой доминировал и швырял меня в здания, и прижал меня к полу! И также не смейте говорить то, что он мог выиграть, просто прижав меня к полу и снеся Фиолетовым в начале боя, пока Махорага не адаптировался! И не говорите то, что Сатору бы меня на изи вынес, если бы я не был сыном сюжета!»</span>
+                    </div>
+
+                    <p>Он говорил это, явно понимая, что он слабее Годзё, но всё равно был зол из-за этого.</p>
+
+                    <p>Акимо спрыгнула с крыши, приземлившись в переулке легко, как кошка. Лиа осталась позади, как они и договаривались. Акимо выпрямилась, глядя прямо в малиновые глаза с вертикальными зрачками.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Сукуна, да? Знаешь, ты только что сам признал всё, о чём просил не говорить. Годзё доминировал весь бой. Ты выиграл только благодаря Мировому Разрезу и Махораге. Без них — он бы тебя уничтожил. Но знаешь что? Мне плевать на ваши разборки. Я здесь не для того, чтобы обсуждать, кто кого победил. Я здесь, потому что... ты силён. Реально силён. Даже если слабее Годзё — ты всё ещё Король Проклятий. И я хочу предложить тебе кое-что. Я Оуцуцуки. Я могу поглощать проклятую энергию. И я могу давать силу в обмен. Что скажешь? Может, вместо того чтобы драться, мы поможем друг другу? Ты дашь мне часть своей энергии — добровольно — а я помогу тебе... скажем так, больше никогда не чувствовать себя «слабее Сатору». Или можешь попробовать напасть. Но предупреждаю: я только что пережила бой с Годзё и выжила. Ты — нет. Дважды подумай, прежде чем начинать то, что не сможешь закончить».</span>
+                    </div>
+
+                    <p>Сукуна медленно повернул голову к Акимо. Его змеиные глаза сузились, изучая её с головы до ног. Он не ожидал такого разговора. Обычно перед ним дрожали. Кричали. Бежали. А эта женщина стоит спокойно. Говорит как равная. Даже усмехается. И предлагает сделку?</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Хе-хе... Ты... Оуцуцуки? Те существа из легенд? Те самые «боги», что могли поглощать энергию?»</span>
+                    </div>
+
+                    <p>Его голос звучал насмешливо, но в нём явно мелькнуло любопытство. Затем он начал смеяться — так фальшиво, что это было почти комично.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты думаешь, я не знаю, что Сатору не добил тебя в Территории? Я следил за боем! Так что не создавай себе понтов из воздуха. И силу тебе не отдам. Максимум — я дам тебе свою силу, если ты сможешь хотя бы напугать меня, как Сатору! Хехехех!»</span>
+                    </div>
+
+                    <p>Акимо выслушала его, не меняясь в лице. Потом медленно, очень медленно улыбнулась — и эта улыбка была совсем не доброй.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Значит, ты следил за боем. Хорошо. Тогда ты видел вот это».</span>
+                    </div>
+
+                    <p>Она развела руки в стороны, и из её спины снова начали прорастать костяные шипы. Но на этот раз — быстрее, увереннее. За неделю она научилась контролировать трансформацию лучше. Шипы превратились в два огромных белых крыла, а глаза засияли золотом.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты видел, как Годзё отрубил мне руку? Как пронзил меня Красным? Как я лежала в луже крови? Но ты также видел, как я прошла сквозь его Бесконечность. Видел, как я заставила его отступить. Видел, как я поднялась после всего этого и осталась жива. Ты просишь напугать тебя? Как Сатору? Годзё напугал тебя силой. Я могу напугать тебя другим. Я могу предложить тебе то, чего он никогда не мог дать. Настоящий вызов. Настоящую битву. Не на жизнь, а на смерть. Ты прожил тысячу лет, Король Проклятий. И всё это время ты искал достойного противника. Годзё был близок. Но он мёртв. А я — здесь. Живая. И я предлагаю тебе не энергию, не сделку... а самую захватывающую битву в твоём существовании. Ну? Этого достаточно, чтобы напугать тебя? Или хотя бы... заинтересовать?»</span>
+                    </div>
+
+                    <p>Сукуна перестал смеяться. Его змеиные глаза сузились, а на лице исчезла надменная ухмылка. Вместо неё — напряжённое внимание. Он увидел это в бою: как Годзё разорвал её тело на части... как она лежала без сознания, истекая кровью... и как затем — вопреки всем законам магии и силы — она встала. Прошла сквозь Бесконечность. Даже заставила Сатору отступить. Это было невероятно. Неслыханно для обычного человека. А теперь эта женщина стоит перед ним с крыльями из чистой энергии Оуцуцуки, с золотыми глазами божества и говорит ему прямо: «Я могу дать тебе настоящую битву».</p>
+
+                    <p>Сукуна мгновенно оказался за спиной Акимо. С помощью разрубания он отрубил ей крылья. После чего с помощью разреза разделил её руку пополам. Затем стал улыбаться, натянул руку в виде стрелы и сказал:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Огненная стрела. Фуга».</span>
+                    </div>
+
+                    <p>Акимо не успела среагировать — всё произошло слишком быстро. Крылья отрублены. Рука разваливается на две половины. А перед лицом — огненная стрела, готовая испепелить её дотла. Но она не запаниковала. В последнюю долю секунды перед ударом Акимо исчезла — телепортация на чистых инстинктах. Она появилась на крыше соседнего здания, тяжело дыша, прижимая разрубленную руку к груди.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Быстрый...»</span>
+                    </div>
+
+                    <p>Она спрыгнула обратно в переулок, приземлившись в нескольких метрах от него. Её рука всё ещё висела плетью, но золотые глаза сияли ярче прежнего.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Знаешь, что я поняла за эту неделю, Сукуна? Ты боишься. Не меня — нет. Ты боишься, что Годзё был прав. Что ты — просто тот, кто выиграл случайно. Что без Махораги, без Мирового Разреза, без всех твоих трюков... ты бы проиграл. Поэтому ты так остро реагируешь. Поэтому тебе нужно доказывать каждому встречному, что ты сильнее Годзё. Но правда в том, что тот, кто действительно силён, не нуждается в доказательствах. Я не боюсь тебя, Сукуна. Не потому что я сильнее. А потому что я уже нашла то, что искала. А ты — всё ещё ищешь».</span>
+                    </div>
+
+                    <p>Она подняла здоровую руку и — очень осторожно — коснулась его щеки. Той самой, с чёрными полосами-татуировками.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Битва? Я дам тебе её. Но не сегодня. Сегодня я предлагаю другое. Перемирие. Обмен силой. И, может быть... когда-нибудь... ты перестанешь быть одним. Как перестала я».</span>
+                    </div>
+
+                    <p>Сукуна замер. Когда её пальцы коснулись его щеки — холодной, с чёрными полосами, как шрамы древнего короля — он не отреагировал. Ни атакой. Ни словом. Он просто остановился. Его малиновые глаза-змеи расширились на долю секунды. Впервые за тысячу лет кто-то коснулся его так спокойно. Без страха смерти в глазах. Без дрожи перед властью Короля Проклятий. А эта женщина... раненая, без крыльев полностью восстановленных... с разделённой рукой... смотрит на него и говорит о перемирии? О взаимопомощи? О том, чтобы перестать быть одиноким?</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты сошла с ума...»</span>
+                    </div>
+
+                    <p>Его голос был тихим. Не злым. Не насмешливым. Просто... потерянным.</p>
+
+                    <p>Он резко схватил её запястье здоровой руки и притянул к себе ближе — но не для удара. Для того чтобы посмотреть ей прямо в глаза. Акимо не сопротивлялась. Даже когда его хватка сжала запястье — она осталась совершенно спокойной, глядя в малиновые глаза.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Возможно. Возможно, я сошла с ума. Но ты всё ещё держишь меня за руку, а не убиваешь. Значит, где-то внутри... тебе интересно. Я не боюсь тебя, Сукуна. Не потому что я бессмертна — я не бессмертна. И не потому что я сильнее — я пока слабее. А потому что я вижу то, что другие не видят. Ты прожил тысячу лет. Ты убил тысячи. Ты Король Проклятий. Но скажи мне честно... когда ты в последний раз говорил с кем-то вот так? Без боя? Без угроз? Без попыток доказать, что ты сильнее? Я знаю, каково это — быть одной. По-настоящему одной. Когда все вокруг либо боятся, либо пытаются использовать. Я жила так сотни лет. Пока не встретила её. Она изменила всё. Не мою силу. Меня. Может быть... может быть, ты тоже можешь измениться? Не стать добрым. Не перестать быть Королём. Просто... перестать быть одним?»</span>
+                    </div>
+
+                    <p>Вдруг Акимо увидела ещё одного Короля Проклятий — того, что взял её за запястье. Тот заговорил, и его голос сочился ядом:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Самозванец</span>
+                        <span class="line">«Слушаю этот жалкий лепет самозванца с растущим раздражением. Как он смеет? Как он смеет носить моё лицо и позорить его такой слабостью? Замолчи, жалкая пародия. Ты не Сукуна. Ты позоришь само имя Короля Проклятий своей сентиментальной чушью. Держать за руку? Смотреть в глаза? Ты что, влюбился, идиот? Ха!»</span>
+                    </div>
+
+                    <p>Настоящий Сукуна отбросил самозванца в сторону простым движением пальца. Затем посмотрел на Акимо сверху вниз с холодным интересом.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«А ты забавная. Говоришь, что видишь то, что другие не видят? Что я ищу? Сатору тоже так говорил. Он тоже думал, что понимает меня. И где он теперь?»</span>
+                    </div>
+
+                    <p>Он сделал паузу, переводя взгляд на Лию наверху.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Твоя подружка. Она твоя сила или твоя слабость, Оуцуцуки? Потому что если первое — вы можете быть интересны. Если второе... я с удовольствием это проверю».</span>
+                    </div>
+
+                    <p>Акимо замерла. Два Сукуны? Нет — один настоящий, другой самозванец. Или это какая-то техника? Но раздумывать было некогда. Настоящий Король Проклятий стоял перед ней — и его аура была совершенно другой. Более древней. Более тёмной. Более... настоящей. Когда он заговорил о Лие — о проверке, является ли она силой или слабостью — глаза Акимо вспыхнули золотом ярче прежнего.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Только тронь её».</span>
+                    </div>
+
+                    <p>Голос Акимо изменился. Он стал ниже, глубже — в нём зазвучали отголоски силы, которую она ещё не показывала. Крылья за спиной полностью восстановились и распахнулись во всю ширь. Разрубленная рука срослась до кончиков пальцев.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты настоящий. Я чувствую это. И я уважаю силу — настоящую силу, а не жалкие попытки самозванца. Но послушай меня, Сукуна. Король Проклятий. Ты хочешь знать, сила она или слабость? Она и то, и другое. Она моя слабость, потому что я умру за неё. И она моя сила, потому что ради неё я стала сильнее, чем когда-либо. Это не делает меня слабой. Это делает меня... цельной. Ты спрашиваешь, где Сатору? Мёртв. Но знаешь что? Он тоже это понял. В конце. Что сила — это не только техники и проклятая энергия. Сила — это те, ради кого ты дерёшься».</span>
+                    </div>
+
+                    <p>Она указала на самозванца, всё ещё лежащего в стороне.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Эта жалкая пародия была права в одном. Я предлагаю перемирие. Обмен силой. Но не из жалости или слабости. А потому что ты — первый за долгое время, кто может понять, что значит быть... богом. Одиноким богом».</span>
+                    </div>
+
+                    <p>Акимо протянула руку — открытую ладонь.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Я не боюсь тебя. Я не пытаюсь тебя изменить. Я просто предлагаю... союз. На равных. Что скажешь?»</span>
+                    </div>
+
+                    <p>Сзади Сукуны появился Урауме и сказал:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Урауме</span>
+                        <span class="line">«Повелитель, она врёт. Годзё повалил её на пол и раскрыл Территорию, после чего запустил Фиолетовый, но не убил — ведь он человек. После он ушёл».</span>
+                    </div>
+
+                    <p>Сукуна резко обернулся. Четыре глаза вспыхнули алым, а чёрные метки на лице начали пульсировать быстрее.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Сатору... не убил её? Так Годзё всё-таки был слабаком до самого конца! Пожалел врага! Оставил в живых ту, что могла стать угрозой! Ты солгала мне, богиня. Сказала, что выжила сама, что заставила его отступить. А на деле — он просто проявил милосердие. Знаешь, что я думаю о милосердии? Это слабость. Слабость, за которую платят жизнью. Сатору заплатил. Заплатишь и ты. Но ты права в одном. Твоя девчонка — и сила, и слабость. И раз ты посмела меня обмануть... Давай проверим, насколько она твоя сила. Защищай её, Оуцуцуки. Покажи мне всё, на что способна. Или я заберу её себе — как трофей, как доказательство того, что даже боги могут терять то, что им дорого».</span>
+                    </div>
+
+                    <p>Акимо выслушала всё. Не перебивала. Даже когда Сукуна обвинил её во лжи, даже когда угрожал забрать Лию — она стояла неподвижно, и только золотые глаза становились всё ярче. Когда он закончил, она медленно выдохнула.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты прав. Я солгала. Годзё не добил меня. Он оставил меня в луже крови, без руки, с пробитым телом — и ушёл. Не из милосердия. Из презрения. Он посчитал меня слишком слабой, чтобы добивать. Это было унижение. Самое большое унижение в моей жизни. И ты знаешь, что я сделала? Я встала. Я восстановилась. Я стала сильнее. Не ради мести — хотя я убью его, когда придёт время. А ради неё. Ты называешь милосердие слабостью. Может быть. Но Годзё проиграл не из-за милосердия. Он проиграл, потому что недооценил тебя. Так же, как недооценил меня. Ты хочешь проверить меня? Давай. Но предупреждаю — я больше не та, что лежала под Годзё. Я неделю восстанавливалась. Я нашла свой предел и перешагнула через него. И если ты тронешь Лию... Я покажу тебе, почему Оуцуцуки называли богами. Не расскажу. Покажу».</span>
+                    </div>
+
+                    <p>Она подняла руку, и в её ладони начал формироваться шар — не проклятой энергии, а чистой, первозданной силы творения. Силы, из которой были созданы миры.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Последний шанс, Сукуна. Бой или союз? Решай. Но знай — второго шанса не будет».</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 5 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 5. Проверка Сукуны</div>
+                <div class="manga-text">
+                    <p>Урауме снова заговорил:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Урауме</span>
+                        <span class="line">«Повелитель, вы помните про все свои техники, в том числе про техники Мегуми Фусигуро?»</span>
+                    </div>
+
+                    <p>Сукуна усмехнулся, глядя на шар чистой энергии в руке Акимо.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«О, я помню все свои техники, слуга. Каждую из них. Тени Десяти Сокровищ? Они всё ещё здесь, внутри этого тела. Махорага? Тоже здесь. Ты интересна мне, Оуцуцуки. Не как враг — как равный. Сатору никогда не показывал мне такого... огня в глазах. Я выбираю... ни бой, ни союз. Я выбираю проверку. Покажи мне свою силу — не чтобы убить, а чтобы доказать. Докажи, что ты достойна называться богиней. Давай, Акимо. Удиви меня. Покажи, чему ты научилась за эту неделю. И если ты выстоишь против моей техники одну минуту... я подумаю над твоим предложением о союзе. Но если проиграешь — Лиа станет моей. Навсегда».</span>
+                    </div>
+
+                    <p>Акимо посмотрела на Лию — всего на мгновение. В её взгляде было всё: страх, любовь, решимость и немой вопрос. «Ты веришь мне?» Лиа едва заметно кивнула. И этого было достаточно. Акимо повернулась к Сукуне. Шар чистой силы в её ладони исчез — не погас, а впитался обратно в тело. Крылья за спиной сложились и тоже исчезли, оставив только лёгкое золотистое свечение вокруг фигуры.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Минута. Против всех твоих техник. И включая Махорагу? Знаешь, Сукуна, ты мог бы просто согласиться на союз. Но нет — тебе нужно представление. Что ж...»</span>
+                    </div>
+
+                    <p>Она развела руки в стороны, и вокруг неё начали формироваться десятки, сотни маленьких сфер — каждая размером с бусину, но сияющая как звезда. Они окружили её плотной сферой, вращаясь с огромной скоростью.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Я покажу тебе кое-что, чего не видела даже в бою с Годзё. Не потому что не могла — потому что не хотела. Это техника, которую Оуцуцуки используют только в самом крайнем случае. Она называется «Звезда Угасания». Знаешь, почему? Потому что каждая из этих сфер — это потенциал целой звезды, сжатый до размера песчинки. Если я выпущу их все разом... ну, Токио перестанет существовать. Но я не буду этого делать. Вместо этого... я просто не дам тебе коснуться меня. Одну минуту. Давай, Король Проклятий. Покажи мне свои Тени. Покажи Махорагу. Покажи всё, что у тебя есть. И я покажу тебе, почему боги не умирают».</span>
+                    </div>
+
+                    <p>Сукуна слушал, и его улыбка становилась шире с каждой секундой.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты всё ещё не поняла, Оуцуцуки. Мне не нужна победа. Мне нужен бой! Настоящий бой! И если ты можешь уничтожить Токио — покажи мне это! Но сначала... позволь мне проверить твою защиту. Техника Тени: Нуэ!»</span>
+                    </div>
+
+                    <p>Из его тени вырвалась огромная птица-ёкай, её электрические крылья рассекали воздух.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Жаба!»</span>
+                    </div>
+
+                    <p>огромная жаба появилась рядом с Нуэ.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Легендарный меч!»</span>
+                    </div>
+
+                    <p>и в его руках возник меч.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Одна минута, Акимо! Покажи мне всё! Потому что я не сдерживаюсь!»</span>
+                    </div>
+
+                    <p>Он бросился в атаку, и его смех смешивался с криком Нуэ. Акимо не двинулась с места. Даже когда Нуэ с электрическими крыльями устремился к ней, даже когда гигантская жаба прыгнула следом — она стояла неподвижно, и только сферы вокруг неё вращались быстрее.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Начали».</span>
+                    </div>
+
+                    <p>Нуэ ударил первым — молниями, способными испепелить здание. Но сферы вокруг Акимо даже не дрогнули. Они поглотили электричество, рассеяли его по своей поверхности и вернули обратно — усиленным втрое. Нуэ отбросило назад с пробитым крылом.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Первая ошибка: атаковать в лоб».</span>
+                    </div>
+
+                    <p>Жаба попыталась схватить Акимо языком, но сферы просто отсекли его — чисто, как лезвием. Жаба исчезла, растворившись в тени.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Вторая ошибка: использовать слабых шикигами против Оуцуцуки».</span>
+                    </div>
+
+                    <p>Акимо подняла руку, и несколько сфер отделились от доспеха, формируя перед ней подобие щита как раз в тот момент, когда Сукуна бросился на неё с легендарным мечом. Клинок столкнулся со щитом из сфер — и замер. Не пробил. Даже не поцарапал.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Третья ошибка: думать, что я буду просто защищаться».</span>
+                    </div>
+
+                    <p>Она щёлкнула пальцами, и сферы вокруг неё взорвались светом — не атакой, а ослепительной вспышкой, которая на мгновение лишила всех зрения. Когда свет погас, Акимо стояла в трёх метрах левее, а на её ладони снова формировался тот самый шар первозданной силы.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Двадцать секунд прошло, Сукуна. Сорок осталось. Покажи мне Махорагу. Или ты боишься, что я его тоже сломаю?»</span>
+                    </div>
+
+                    <p>Сукуна услышал слова Урауме, и его ухмылка стала злее.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты прав. Хватит играть. Если эта богиня хочет увидеть настоящего Короля Проклятий... Техника Тени: Высшее Призывание! Махорага!»</span>
+                    </div>
+
+                    <p>Из его тени поднялась огромная фигура — колесо за спиной, меч возмездия в руке, пустые глаза, готовые адаптироваться ко всему.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Активирую также свою собственную технику — Разрез и Рассечение! Огненная Стрела! Давай, богиня! Покажи мне свою Звезду Угасания! Покажи, на что способны Оуцуцуки, когда сражаются насмерть!»</span>
+                    </div>
+
+                    <p>Он бросился в атаку вместе с Махорагой. Тридцать секунд осталось. Акимо увидела Махорагу — легендарного шикигами, способного адаптироваться к любой технике. Тот самый, что помог Сукуне победить Годзё. И на мгновение в её глазах мелькнуло узнавание.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Махорага... вот ты какой».</span>
+                    </div>
+
+                    <p>Но времени на раздумья не было. Разрез и Рассечение искажали пространство вокруг неё. Огненная Стрела летела прямо в грудь. А сам Сукуна и Махорага атаковали с двух сторон. Акимо выдохнула. И исчезла. Не телепортация — нечто другое. Она просто перестала быть в том месте, куда были направлены все атаки. Разрез прошёл сквозь пустоту. Огненная Стрела врезалась в стену за ней. Махорага рубанул воздух. Акимо появилась в воздухе, в десяти метрах над ними. Сферы вокруг неё вращались с бешеной скоростью, а глаза сияли так ярко, что смотреть на них было почти больно.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты хочешь увидеть Звезду Угасания? Смотри».</span>
+                    </div>
+
+                    <p>Она подняла руку к небу, и одна из сфер — самая яркая — отделилась от доспеха и взлетела высоко вверх, за пределы атмосферы, в открытый космос. На мгновение ничего не происходило. А потом ночное небо над Токио озарилось — не взрывом, а светом. Чистым, ослепительным, как рождение новой звезды. Сфера взорвалась в космосе, в миллионах километров от Земли, но свет достиг города за долю секунды. И в этом свете Махорага замер. Его колесо за спиной закрутилось быстрее, пытаясь адаптироваться, но не могло — потому что это была не атака. Это был просто свет. Чистая, первозданная сила творения, против которой нечего было адаптировать.</p>
+
+                    <p>Акимо опустилась обратно в переулок. Её доспехи потускнели — она потратила одну из звёзд на демонстрацию.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Пятнадцать секунд осталось, Сукуна. Махорага всё ещё не адаптировался. Хочешь продолжить? Или этого достаточно?»</span>
+                    </div>
+
+                    <p>Сукуна остановился посреди атаки. Медленно опустил руку, и Махорага замер рядом с ним. Слуга был прав — он слишком увлёкся игрой.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Знаешь, Акимо, ты действительно впечатляешь. Твоя Звезда Угасания... красиво. Очень красиво. Но ты совершила одну ошибку. Ты показала мне свою силу, но оставила свою слабость без защиты».</span>
+                    </div>
+
+                    <p>Он резко перевёл взгляд на Лию, всё ещё стоящую на крыше. Сложил пальцы в жест.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Техника: Призыв! Гигантский Змей!»</span>
+                    </div>
+
+                    <p>Из его тени вырвался огромный шикигами, который мгновенно обвил здание, где стояла Лиа. Одно движение челюстей — и он раздавит её вместе с крышей.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты права — это не бой насмерть. Это проверка. И ты прошла её... наполовину. Показала силу, но не показала, готова ли ты на всё ради неё. Так что выбирай, богиня. Либо ты отдаёшь мне свою Звезду — одну из этих сфер, — либо я забираю твою девчонку. Решай. Быстро».</span>
+                    </div>
+
+                    <p>Акимо замерла. Золотые глаза метнулись к Лие — Гигантский Змей обвил здание, и одно движение челюстей могло раздавить её вместе с крышей. Что-то внутри Акимо щёлкнуло.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты... Ты прав. Я оставила её без защиты. Это была ошибка».</span>
+                    </div>
+
+                    <p>Она подняла руку, и одна из оставшихся сфер отделилась от доспеха. Зависла над ладонью — маленькая, сияющая, содержащая в себе потенциал целой звезды.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Вот. Забирай».</span>
+                    </div>
+
+                    <p>Она швырнула сферу Сукуне — не атакуя, просто передавая. Сфера остановилась в воздухе перед ним, ожидая, когда он её возьмёт.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Но знай, Сукуна. Ты только что превратил возможного союзника во врага. Не потому что попросил плату. А потому что использовал её. Потому что угрожал той, кто не может защититься. Ты мог получить союзника. Вместо этого ты получил меня. И когда-нибудь — не сегодня, но когда-нибудь — ты пожалеешь об этом решении. А теперь убери своего червя. Проверка закончена. Ты получил свою сферу. Я забираю своё».</span>
+                    </div>
+
+                    <p>Сукуна взял сферу в руку — она была тёплой, пульсировала чужой, непонятной силой. Слуга была права. Эта энергия не проклятая. Он не мог её поглотить, не мог использовать для своих техник. Она была бесполезна для него.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты права, слуга. Эта сфера — просто красивая безделушка».</span>
+                    </div>
+
+                    <p>Он сжал её в кулаке, и она рассыпалась звёздной пылью, осыпаясь между пальцев.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Но дело не в ней».</span>
+                    </div>
+
+                    <p>Он смотрел вслед уходящей Акимо, и его улыбка медленно гасла, сменяясь чем-то похожим на уважение.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Она отдала её. Не колеблясь. Ради той, кого любит. Это не слабость, слуга. Это... то, чего я никогда не понимал. То, что Годзё пытался мне показать».</span>
+                    </div>
+
+                    <p>Он отозвал Гигантского Змея — тот растворился в тени, освобождая здание. Затем крикнул вслед Акимо:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Эй, богиня! Ты прошла проверку. Не из-за сферы — из-за неё. Я не буду твоим врагом. Пока что. Но и союзником не стану — пока не пойму, что это значит. Когда будешь готова к настоящему разговору — найди меня. Без угроз, без проверок. Просто поговорить. О нём. О Годзё. О том, что он понял перед смертью».</span>
+                    </div>
+
+                    <p>Акимо остановилась, но не обернулась. Она слушала, как рассыпается звёздной пылью её сфера. Слушала, как Змей растворяется в тени, освобождая Лию. Когда Сукуна заговорил о Годзё — о том, что он понял перед смертью — её плечи чуть дрогнули.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Я найду тебя. И да, Сукуна... ты был прав. Это не слабость. Это то, что делает нас сильнее. Даже тебя. Просто ты ещё не понял этого».</span>
+                    </div>
+
+                    <p>Она прыгнула — одним мощным движением преодолела расстояние до крыши. Приземлилась рядом с Лией, тяжело дыша. Доспехи из сфер погасли, крылья исчезли, осталась только она сама — растрёпанная, уставшая, но живая.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты цела? Он не...»</span>
+                    </div>
+
+                    <p>Она не закончила фразу. Просто обняла Лию — крепко, до хруста, зарываясь лицом в её волосы.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Прости. Прости, что оставила тебя одну. Я думала, что контролирую ситуацию. Я почти потеряла тебя снова...»</span>
+                    </div>
+
+                    <p>Лиа крепко обняла её в ответ, ощущая дрожь в руках Акимо. Она не говорила ничего — просто прижала к себе, пальцы впились ей в спину, как будто боясь, что та исчезнет. Она видела всё сверху: как Сукуна атаковал. Как Акимо сражалась без страха. Как бросила сферу — свою силу — ради неё. Когда они расстались и посмотрели друг на друга — глаза обеих были влажными. Но ни одна не плакала вслух.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Я целая... Он тебя испугал? Что-то сделал?»</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Нет. Он не сделал мне ничего... такого. Он просто... проверял меня. Как и обещал. Но когда он призвал Змея и обвил им здание, где ты стояла... Я чуть не сорвалась. Если бы он действительно тронул тебя... я бы уничтожила весь этот район. Вместе с ним. Вместе с его слугой. Даже если бы это стоило мне жизни. Но он отпустил тебя. И знаешь что? Он сказал, что хочет поговорить. О Годзё. О том, что Сатору понял перед смертью. Я не доверяю ему. Пока нет. Но, может быть... он не безнадёжен. Может быть, даже Король Проклятий может измениться. В конце концов, кто бы мог подумать, что глава мафии и богиня Оуцуцуки будут стоять на крыше и обниматься, обсуждая философию с Королём Проклятий? Жизнь — странная штука».</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 6 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 6. Тихие дни и пицца</div>
+                <div class="manga-text">
+                    <p>Прошло пять дней. Акимо сидела на подоконнике их квартиры, глядя на утренний Токио. Город жил своей жизнью — люди спешили на работу, машины гудели в пробках, где-то вдалеке звенел колокольчик велосипеда. Раны Акимо полностью зажили. Рука восстановилась идеально — ни шрама, ни следа. Только внутри что-то изменилось. Что-то, что не могли исцелить даже способности Оуцуцуки.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... Я думала о словах Сукуны. О том, что он хочет поговорить о Годзё. И о том, что Сатору понял перед смертью. Я ненавижу его. Годзё. За то, что он сделал с нами. За то, что унизил меня. За то, что ударил тебя. Но... если он действительно что-то понял перед смертью — что-то важное, что Сукуна тоже хочет понять... может быть, это стоит услышать? Не ради Годзё. Ради нас. Ради того, чтобы стать сильнее — не физически, а... по-другому. Что думаешь? Искать Сукуну? Или забыть обо всём и просто жить дальше?»</span>
+                    </div>
+
+                    <p>Но прежде чем Лиа успела ответить, Акимо с Лией впервые занялись сексом. По-настоящему. Без иллюзий, без воздействий, без навязанных чувств. Это было их решение. Их желание. Их любовь. И когда всё закончилось, они лежали в постели, тяжело дыша, счастливые и расслабленные.</p>
+
+                    <p>А потом в дверь постучали. Вернее, не постучали — вломились. Тодо и Юджи стояли в дверях квартиры с пятью коробками пиццы. Тодо, огромный и мускулистый, держал три коробки одной рукой, а второй размахивал в воздухе, явно собираясь что-то громогласно объявить. Юджи, розоволосый и вечно жизнерадостный, держал две оставшиеся коробки и широко улыбался. Акимо, увидев их, мгновенно прикрыла Лию одеялом — та была полностью голой. Затем встала в одежде и сказала:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«ЧТО вам нужно, идиоты?!»</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Тодо</span>
+                        <span class="line">«Акимо! Мы пришли поговорить о Сукуне! И о Годзё! Но сначала — пицца!»</span>
+                    </div>
+
+                    <p>Юджи заметил смущение Акимо и слегка покраснел.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Юджи</span>
+                        <span class="line">«Э-э... мы не вовремя? Простите! Мы просто услышали, что вы ищете Сукуну, и подумали...»</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Тодо</span>
+                        <span class="line">«Мы подумали, что ты захочешь узнать о нём больше! Юджи — его сосуд! Или был им. Мы знаем о Сукуне всё! А ещё мы знаем, что случилось с Годзё в конце. То, что он понял».</span>
+                    </div>
+
+                    <p>Акимо перевела взгляд с Тодо на Юджи, потом на пиццу, потом на Лию, укутанную в одеяло. Она глубоко вздохнула, потёрла переносицу и — совершенно неожиданно — рассмеялась.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ладно. Заходите. Но если вы ещё раз вломитесь без стука — я превращу вас обоих в звёздную пыль. Понятно?»</span>
+                    </div>
+
+                    <p>Она помогла Лие закутаться поплотнее и села напротив незваных гостей. Взяла кусок пиццы.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Говорите. Всё, что знаете. Особенно о том, что Сатору понял. Потому что Сукуна сказал, что хочет поговорить именно об этом. И если я приду к нему с пустыми руками — он снова попытается меня проверить. А я устала от проверок».</span>
+                    </div>
+
+                    <p>Юджи отложил недоеденный кусок пиццы и опустил взгляд на свои руки. Тишина в комнате стала почти осязаемой.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Юджи</span>
+                        <span class="line">«Это было... странно. Годзё-сенсей лежал на земле. Сукуна стоял над ним. Весь бой Годзё-сенсей доминировал, но потом... ну, вы знаете. Мировой Разрез. И когда всё закончилось... Я думал, Сукуна будет смеяться. Праздновать. Он победил сильнейшего мага современности. Но вместо этого он просто стоял и смотрел. А потом Годзё-сенсей... он улыбнулся. Он сказал: «Ты победил, Сукуна. Но ты всё ещё один. И всегда будешь один, пока думаешь, что сила — это всё. Я не один. Даже сейчас. Посмотри вокруг. Ученики. Друзья. Те, ради кого я дрался. А у тебя — только ты сам. Это не победа. Это приговор». Сукуна ничего не ответил. Но он не смеялся. Вообще. Просто стоял и смотрел, как Годзё-сенсей... уходит. А потом, когда мы сражались позже, я заметил — он был другим. Не слабее. Но как будто... задумчивым? Словно слова Годзё-сенсея засели у него в голове. Вот что он хочет понять. Сукуна. Он хочет понять, почему Годзё не боялся смерти. Почему он улыбался в конце. И что значит — быть сильным не в одиночку. Он никогда не скажет этого прямо, но... я знаю его. Я носил его в себе. Ему нужно это понять. Потому что иначе — он всегда будет один. Даже если победит всех».</span>
+                    </div>
+
+                    <p>Акимо молча дослушала до конца.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Значит, правда... Годзё понял перед смертью то, что я поняла в баре, когда прижималась пьяная к Лие. Ирония, да? Величайший маг современности и богиня Оуцуцуки — мы обе пришли к одному и тому же. Только он заплатил за это жизнью, а я... я получила шанс. Спасибо. За пиццу. За правду. За то, что вломились без стука. А теперь — убирайтесь. Серьёзно. У нас с Лией ещё кое-какие дела».</span>
+                    </div>
+
+                    <p>Она подмигнула Лии, и в этом подмигивании было столько озорства, что даже Тодо смутился.</p>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 7 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 7. Девять месяцев и две полоски</div>
+                <div class="manga-text">
+                    <p>На следующее утро Акимо пошла искать Сукуну. Но его не было. Нигде. Он будто исчез. Так прошло девять месяцев. Девять месяцев поисков, тренировок и тихой домашней жизни. Сукуна не появлялся. Юджи и Тодо иногда заходили — предварительно постучав, — но и они ничего не знали. Акимо уже начала думать, что Король Проклятий просто потерял интерес.</p>
+
+                    <p>Но затем она заметила странности в поведении Лии. Сначала это было мило. Лиа, грозная глава мафии, которая когда-то убивала людей за косой взгляд, вдруг начала требовать рыбу с мороженым в три часа ночи. Потом — солёные огурцы с шоколадом. Потом — ещё что-то, чего Акимо даже не пыталась понять. Но когда Лию начало тошнить по утрам, а её настроение стало меняться быстрее, чем техники Годзё... Акимо заподозрила неладное.</p>
+
+                    <p>Однажды утром она села рядом с Лией на кровать, держа в руках маленькую коробочку из аптеки.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... Я, конечно, не эксперт в человеческой биологии. Я Оуцуцуки, мы вообще размножаемся иначе. Но... кажется, тебе стоит это сделать».</span>
+                    </div>
+
+                    <p>Она протянула Лии тест на беременность.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Если я ошибаюсь — прости. Но если нет...»</span>
+                    </div>
+
+                    <p>Тест показал две полоски. Чёткие. Неоспоримые. Акимо уставилась на тест. Она молчала целую минуту. Потом ещё одну. Потом подняла глаза на Лию — и в них было столько эмоций, что невозможно было выделить что-то одно. Страх. Радость. Паника. Нежность. Шок.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ты... мы...»</span>
+                    </div>
+
+                    <p>Она запнулась. Богиня Оуцуцуки, существо, способное уничтожать звёзды, не могла связать двух слов. А потом она рассмеялась. Искренне, заливисто, почти как тогда, в баре, когда они только встретились.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«У нас будет ребёнок!»</span>
+                    </div>
+
+                    <p>Она обняла Лию — осторожно, почти благоговейно, словно та стала самой хрупкой драгоценностью во вселенной.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лиа... я не знаю, что сказать. Я не знаю, что делать. Я никогда... за сотни лет я никогда даже не думала, что это возможно. Ты рада? Ты... хочешь этого? Я люблю тебя. И я буду лучшей... кем? Мамой? Второй мамой? Неважно. Я буду лучшей, кем угодно, для вас обоих. Обещаю».</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 8 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 8. Рождение Рин и новая жизнь</div>
+                <div class="manga-text">
+                    <p>Прошло два года. Маленькая квартира на окраине Токио давно стала домом. Настоящим домом — с разбросанными игрушками, детскими рисунками на стенах и запахом молока и печенья. Их дочь, Рин, сидела на коленях у Лии и сосредоточенно пыталась засунуть кубик в отверстие другой формы. У неё были розовые волосы — точно как у Акимо — и глаза Лии, тёмные и пронзительные, но пока ещё по-детски любопытные. Акимо стояла в дверях и смотрела на них. Два года назад она была готова сражаться с Королём Проклятий. Год назад — училась менять подгузники. А сейчас... сейчас она просто наслаждалась моментом.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Ну что, мелкая, опять квадратное в круглое? Кстати, звонил Тодо. У них с Такако медовый месяц. Он сказал, что если мы не придём на годовщину их свадьбы, он лично принесёт пиццу и будет стучать. А Юджи с Киёко ждут первенца. Представляешь? Наш маленький Юджи — папа».</span>
+                    </div>
+
+                    <p>Рин наконец справилась с кубиком и радостно захлопала в ладоши. Акимо подхватила её на руки и закружила, вызвав звонкий детский смех.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Знаешь, Лиа... я так и не нашла Сукуну. Но, может быть, это и к лучшему. Может быть, ему нужно было исчезнуть, чтобы найти себя. Как мы нашли друг друга. У нас всё хорошо. Правда?»</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 9 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 9. Путь Сукуны</div>
+                <div class="manga-text">
+                    <p>А Сукуна всё это время был на вершине старого храма за пределами Токио. Два года он не показывался. Не потому что боялся — нет. Просто слова Годзё всё ещё звучали в голове. И то, как Акимо отдала сферу ради Лии. Он сидел и смотрел на закат. Рядом с ним материализовался слуга:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Урауме</span>
+                        <span class="line">«Они всё ещё ищут тебя, господин. Особенно Акимо. У неё теперь... ребёнок. Девочка. И Юджи женился. И Тодо. Весь мир изменился за эти два года».</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Знаю. Я следил. Не вмешивался, но следил. Она сделала то, что Годзё пытался мне объяснить. Построила что-то... не на силе. На связи. И теперь у неё есть то, чего у меня никогда не было».</span>
+                    </div>
+
+                    <p>Он встал, отряхивая кимоно.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Пожалуй, пора навестить старых знакомых. Не для битвы. Просто... посмотреть. На ребёнка. На эту новую жизнь, которую они построили. Может быть, я наконец пойму, что имел в виду Сатору».</span>
+                    </div>
+
+                    <p>И тут ему явился Годзё. Не настоящий — галлюцинация. Он сидел рядом, с той же ухмылкой, с той же повязкой на глазах.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Я думаю, тебе лучше понять человеческую жизнь. Завести работу, дом, собаку, жену».</span>
+                    </div>
+
+                    <p>Сукуна резко повернул голову. Но он чувствовал: это не Годзё. Плоть не пахнет, сердце не бьётся. Иллюзия. Его собственный разум играет с ним.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ха! Даже мёртвый, ты умудряешься меня раздражать, Годзё. Работа? Дом? Собака? Ты всегда говорил глупости. Но... возможно, в этот раз в твоих словах что-то есть».</span>
+                    </div>
+
+                    <p>Он встал, и галлюцинация исчезла.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Не работа. Не собака. Но... понять их. Увидеть своими глазами, что такого ценного в этих связях, о которых ты твердил до самого конца. Я иду не драться, Годзё. Я иду смотреть. Может быть, даже слушать. Не ради тебя — ради себя».</span>
+                    </div>
+
+                    <p>Внутренний голос Годзё снова заговорил:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Я думаю, они тебе не будут рады. Ты ведь убил их учителя».</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты всегда любил портить момент, Годзё. Даже из могилы. Они не будут рады. Конечно, не будут. Юджи пытался убить меня. Мегуми... я украл его тело. А Акимо? Она отдала мне сферу только потому, что я угрожал Лие. Но ты сам сказал перед смертью: я всегда буду один, пока считаю силу всем. Может, пришло время... не извиняться. Я не извиняюсь. Но понять. Просто понять. И, возможно, впервые за тысячу лет... попробовать что-то другое».</span>
+                    </div>
+
+                    <p>Голос Годзё продолжил:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Живи как обычный человек. Ты и сам понимаешь смысл моих слов. Даже на грани смерти мы с Юджи хотели, чтобы ты понял. Вспомни ту девушку, с которой ты сражался в битве, в которой если бы она выиграла, ты стал её мужем и вы жили тихо и счастливо с вашими четырьмя детьми».</span>
+                    </div>
+
+                    <p>Сукуна замер. Этот голос... он снова прав. Та девушка. Та битва, о которой он почти забыл. Если бы она победила... он бы стал её мужем. Четыре ребёнка. Тихая жизнь. Тогда он считал это унижением. Сейчас...</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Ты издеваешься надо мной, Сатору? Даже мёртвый, ты находишь способы тыкать меня носом в мои же ошибки. Та битва... она была сильна. По-своему. Не как ты. Не как Акимо. Но она сражалась не ради силы. Она сражалась ради... будущего. Нашего будущего. А я рассмеялся ей в лицо и убил. Может, ты и прав. Может, пора попробовать. Не ради них. Ради себя. Понять наконец, что ты имел в виду».</span>
+                    </div>
+
+                    <p>Голос Годзё:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Я уйду, когда ты найдёшь правильное счастье».</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Значит, ты будешь рядом ещё долго, Сатору. Я не умею быть счастливым. Не так, как ты. Не так, как они. Но я попробую. Не ради тебя. Не ради Юджи. Ради себя. Может быть, впервые за тысячу лет я хочу понять, каково это — не быть одному. А теперь заткнись. У меня впереди долгая дорога. И, кажется, мне нужно купить нормальную одежду. Это кимоно привлекает слишком много внимания».</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ГЛАВА 10 -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Глава 10. Дядя Суку</div>
+                <div class="manga-text">
+                    <p>Прошло ещё три года. Сукуна стал обычным человеком. Он сидел на веранде своего небольшого дома на окраине Токио. Пёс Сатору — огромная белая собака с голубыми глазами — лежал у его ног. Кошка Годзё — чёрная, с белой полосой, пересекающей морду наискось, как повязка — свернулась клубком на коленях. Он смотрел на закат, потягивая чай.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Знаешь, Сатору... если ты всё ещё здесь, в моей голове... можешь уходить. У меня есть дом. Работа — консультирую магов по древним проклятиям, представляешь? Собака. Кошка. Даже друзья — Юджи заходит раз в неделю с пиццей. Всё ещё смотрит на меня с опаской, но уже не пытается убить. Акимо и Лиа пригласили на день рождения Рин. Сказали, если я снова не приду, Рин обидится. Эта мелкая — единственная, кто никогда меня не боялся. Называет «дядей Суку». Меня. Короля Проклятий. «Дядя Суку». Ты был прав. Не в том, что сила — ничто. Сила важна. Но то, ради чего ты её используешь... важнее. Я понял. Наконец-то понял. Можешь уходить, Сатору. Упокойся с миром. Я больше не один. И, кажется... я счастлив. По-своему».</span>
+                    </div>
+
+                    <p>Голос Годзё — в последний раз:</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Годзё</span>
+                        <span class="line">«Прощай... лучший друг».</span>
+                    </div>
+
+                    <p>Сукуна замер. Лучший друг? Он назвал его лучшим другом? Тот, кого он убил? Тот, кто тысячу лет не знал ничего, кроме жажды силы и разрушения? По его щеке скатилась слеза — первая за тысячу лет.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Прощай, Сатору. Спасибо... что не сдался. Даже после смерти».</span>
+                    </div>
+
+                    <p>Он взял сладости и направился к дому Акимо и Лии. Один друг ушёл. Но другие остались. И он больше не намерен был терять никого.</p>
+                </div>
+            </div>
+
+            <!-- ЭПИЛОГ -->
+            <div class="manga-chapter">
+                <div class="manga-chapter-title">Эпилог. Книга и конец</div>
+                <div class="manga-text">
+                    <p>Прошли десятилетия. Акимо сидела в кресле у окна, закутанная в плед. Её розовые волосы поседели, но глаза всё ещё блестели — те самые золотые искры Оуцуцуки, которые не гасли даже с годами. Рядом, на кровати, лежала Лиа — её дыхание было тихим, но спокойным. В комнате собрались все. Сукуна, ссутулившийся в кресле, но всё ещё сохранявший ту самую усмешку. Юджи, поседевший и морщинистый, держал за руку Киёко. Тодо, всё ещё огромный, но передвигавшийся с тростью, сидел рядом с Такако. Рин, уже взрослая женщина с детьми, стояла в дверях. На столе лежала книга — толстая, потрёпанная, с загнутыми страницами и пометками на полях. <span class="highlight">«Бар на краю Токио: История любви, битв и Короля Проклятий»</span>. Акимо, Сукуна, Юджи и Тодо писали её вместе — воспоминания о молодости, о битвах, о том, как всё начиналось.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Помнишь, Сукуна? Ты чуть не убил меня в том переулке. А теперь мы соавторы».</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Сукуна</span>
+                        <span class="line">«Если бы кто-то сказал мне тысячу лет назад, что я буду писать книгу с богиней Оуцуцуки... я бы рассмеялся ему в лицо. И, возможно, убил бы».</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Тодо</span>
+                        <span class="line">«А помните, как вы вломились к нам с пиццей? Тодо чуть дверь не снёс».</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Юджи</span>
+                        <span class="line">«Это была тактическая операция. Пицца — прикрытие».</span>
+                    </div>
+
+                    <p>Все рассмеялись. Даже Лиа слабо улыбнулась.</p>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Лиа</span>
+                        <span class="line">«Мы прожили хорошую жизнь, правда?»</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <span class="speaker">— Акимо</span>
+                        <span class="line">«Лучшую... Аки...»</span>
+                    </div>
+
+                    <p>Акимо закрыла глаза. На её губах застыла улыбка. Солнце садилось за окном — такое же оранжево-розовое, как в тот вечер, когда пьяная богиня прижалась к главе мафии в дешёвом баре и изменила всё. Где-то там, за гранью, Годзё Сатору сидит на облаке, свесив ноги, и ждёт. Он знает — рано или поздно все соберутся снова. И тогда они наконец-то поговорят. О силе. О любви. О пицце. И о том, что даже Король Проклятий может стать счастливым.</p>
+
+                    <p style="text-align: center; margin-top: 50px; font-size: 20px; color: #ffd97a; letter-spacing: 4px;">КОНЕЦ</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function createPetals() {
+            const container = document.getElementById('petalsContainer');
+            if (!container) return;
+            const count = 25;
+
+            for (let i = 0; i < count; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDelay = Math.random() * 8 + 's';
+                petal.style.animationDuration = (6 + Math.random() * 6) + 's';
+                petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(petal);
+            }
+        }
+        createPetals();
+
+        function openStory(event) {
+            event.preventDefault();
+            document.getElementById('mainScreen').classList.remove('active');
+            document.getElementById('storyScreen').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function closeStory() {
+            document.getElementById('storyScreen').classList.remove('active');
+            document.getElementById('mainScreen').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+    </script>
+
+</body>
+</html>
